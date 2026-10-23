@@ -1,0 +1,1379 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude Skills Field Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f3ee; --bg2:#ffffff; --ink:#1b1916; --muted:#6b655c; --line:#e3ddd3;
+  --accent:#d9653b; --accent2:#6b5bd6; --accent3:#1f9d8b;
+  --s:#d9653b; --a:#6b5bd6; --b:#1f9d8b;
+  --card:#ffffffcc; --code:#f1ece4; --glow:rgba(217,101,59,.18);
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121110; --bg2:#1a1917; --ink:#f1ede6; --muted:#a39c90; --line:#2c2a26;
+    --accent:#f08158; --accent2:#9c8ff0; --accent3:#4cc9b4;
+    --s:#f08158; --a:#9c8ff0; --b:#4cc9b4;
+    --card:#1c1b19cc; --code:#24221f; --glow:rgba(240,129,88,.16);
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121110; --bg2:#1a1917; --ink:#f1ede6; --muted:#a39c90; --line:#2c2a26;
+  --accent:#f08158; --accent2:#9c8ff0; --accent3:#4cc9b4;
+  --s:#f08158; --a:#9c8ff0; --b:#4cc9b4;
+  --card:#1c1b19cc; --code:#24221f; --glow:rgba(240,129,88,.16);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,sans-serif;overflow-x:hidden;transition:background .4s,color .4s}
+a{color:inherit}
+code,.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+@media(min-width:720px){.wrap{padding:0 32px}}
+
+/* ---------- nav ---------- */
+nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:color-mix(in srgb,var(--bg) 78%,transparent);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:20px;height:60px}
+.logo{font-family:Fraunces,serif;font-weight:700;font-size:19px;display:flex;align-items:center;gap:8px;text-decoration:none;white-space:nowrap}
+.logo svg{animation:spin 18s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.navlinks{display:none;gap:18px;margin-left:auto;font-size:14px;color:var(--muted)}
+.navlinks a{text-decoration:none;transition:color .2s}.navlinks a:hover{color:var(--accent)}
+@media(min-width:900px){.navlinks{display:flex}}
+.themebtn{margin-left:auto;border:1px solid var(--line);background:var(--bg2);color:var(--ink);border-radius:999px;width:38px;height:38px;cursor:pointer;display:grid;place-items:center;font-size:16px}
+@media(min-width:900px){.themebtn{margin-left:8px}}
+.progress{position:absolute;left:0;bottom:-1px;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));width:0}
+
+/* ---------- hero ---------- */
+.hero{position:relative;padding:90px 0 70px;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;pointer-events:none}
+.o1{width:420px;height:420px;background:var(--accent);top:-120px;left:-80px;animation:float1 16s ease-in-out infinite}
+.o2{width:360px;height:360px;background:var(--accent2);top:40px;right:-100px;animation:float2 19s ease-in-out infinite}
+.o3{width:300px;height:300px;background:var(--accent3);bottom:-160px;left:40%;animation:float1 22s ease-in-out infinite reverse}
+@keyframes float1{50%{transform:translate(60px,40px) scale(1.1)}}
+@keyframes float2{50%{transform:translate(-50px,60px) scale(.9)}}
+.grid-bg{position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:44px 44px;mask-image:radial-gradient(ellipse at center,#000 20%,transparent 70%);opacity:.5}
+.hero .wrap{position:relative}
+.eyebrow{display:inline-flex;gap:8px;align-items:center;font-size:13px;font-weight:600;letter-spacing:.04em;padding:6px 14px;border:1px solid var(--line);border-radius:999px;background:var(--card);backdrop-filter:blur(6px)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--accent3);box-shadow:0 0 0 0 var(--accent3);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 10px transparent}100%{box-shadow:0 0 0 0 transparent}}
+h1{font-family:Fraunces,serif;font-weight:700;font-size:clamp(38px,7vw,78px);line-height:1.04;letter-spacing:-.02em;margin:22px 0 18px;max-width:900px}
+.grad{background:linear-gradient(100deg,var(--accent),var(--accent2) 50%,var(--accent3));-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% auto;animation:shine 6s linear infinite}
+@keyframes shine{to{background-position:200% center}}
+.lede{font-size:clamp(17px,2vw,20px);color:var(--muted);max-width:680px}
+.typed{color:var(--ink);font-weight:600;border-right:2px solid var(--accent);padding-right:3px;animation:caret 1s step-end infinite}
+@keyframes caret{50%{border-color:transparent}}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:44px;max-width:760px}
+@media(min-width:720px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;backdrop-filter:blur(6px)}
+.stat b{font-family:Fraunces,serif;font-size:34px;display:block;line-height:1.1}
+.stat span{font-size:13px;color:var(--muted)}
+
+/* ---------- sections ---------- */
+section{padding:70px 0}
+.sec-head{display:flex;flex-direction:column;gap:8px;margin-bottom:34px}
+.kicker{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+h2{font-family:Fraunces,serif;font-size:clamp(28px,4vw,44px);line-height:1.1;letter-spacing:-.01em}
+.sec-head p{color:var(--muted);max-width:720px}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* how it works */
+.flow{display:grid;gap:16px}
+@media(min-width:860px){.flow{grid-template-columns:repeat(3,1fr)}}
+.step{position:relative;background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:var(--shadow)}
+.step .n{font-family:Fraunces,serif;font-size:44px;color:var(--accent);opacity:.9;line-height:1}
+.step h3{margin:10px 0 6px;font-size:18px}
+.step p{color:var(--muted);font-size:15px}
+.step .bar{height:6px;border-radius:6px;background:var(--code);margin-top:16px;overflow:hidden}
+.step .bar i{display:block;height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 1.6s cubic-bezier(.2,.7,.2,1) .3s}
+.step.in .bar i{width:var(--w)}
+.step small{display:block;margin-top:6px;font-size:12px;color:var(--muted)}
+
+.install{margin-top:24px;display:grid;gap:16px}
+@media(min-width:860px){.install{grid-template-columns:1fr 1fr}}
+.term{background:#151412;color:#e9e4da;border-radius:16px;padding:18px 20px;font:14px/1.7 "JetBrains Mono",monospace;box-shadow:var(--shadow);overflow-x:auto;border:1px solid #2a2824}
+.term .bar3{display:flex;gap:6px;margin-bottom:12px}.term .bar3 i{width:11px;height:11px;border-radius:50%;background:#3a3732}
+.term .bar3 i:nth-child(1){background:#ef6a5e}.term .bar3 i:nth-child(2){background:#f4bf4f}.term .bar3 i:nth-child(3){background:#61c454}
+.term .c{color:#8a8478}.term .p{color:#f08158}
+.term h4{font:600 12px Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#a39c90;margin-bottom:8px}
+
+/* ---------- explorer ---------- */
+.controls{display:flex;flex-direction:column;gap:14px;margin-bottom:26px;position:sticky;top:60px;z-index:20;padding:14px 0;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(10px)}
+.search{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:0 14px;height:48px;box-shadow:var(--shadow)}
+.search input{flex:1;border:0;background:transparent;color:var(--ink);font:inherit;outline:none;min-width:0}
+.search kbd{font:12px "JetBrains Mono",monospace;border:1px solid var(--line);border-radius:6px;padding:2px 6px;color:var(--muted)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--bg2);color:var(--ink);border-radius:999px;padding:7px 14px;font:500 14px Inter,sans-serif;cursor:pointer;transition:all .25s}
+.chip:hover{border-color:var(--accent)}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip .ct{opacity:.6;margin-left:4px;font-size:12px}
+.tierf{display:flex;gap:8px;flex-wrap:wrap;font-size:13px;color:var(--muted);align-items:center}
+.tierf .chip{padding:4px 12px;font-size:13px}
+
+.cards{display:grid;gap:16px}
+@media(min-width:680px){.cards{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1040px){.cards{grid-template-columns:repeat(3,1fr)}}
+.card{position:relative;background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow);transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s,border-color .35s;animation:pop .5s cubic-bezier(.2,.7,.2,1) both;overflow:hidden}
+.card::before{content:"";position:absolute;inset:0;background:radial-gradient(400px circle at var(--mx,50%) var(--my,0%),var(--glow),transparent 45%);opacity:0;transition:opacity .3s;pointer-events:none}
+.card:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+.card:hover::before{opacity:1}
+@keyframes pop{from{opacity:0;transform:translateY(16px) scale(.98)}}
+.card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.card h3{font-size:18px;line-height:1.25}
+.card .by{font:12px "JetBrains Mono",monospace;color:var(--muted);word-break:break-all}
+.tier{flex:none;font:700 12px Inter,sans-serif;border-radius:8px;padding:3px 9px;color:#fff;letter-spacing:.04em}
+.tier.S{background:var(--s)}.tier.A{background:var(--a)}.tier.B{background:var(--b)}
+.card p{font-size:14.5px;color:var(--muted)}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:6px;background:var(--code);color:var(--muted)}
+.why{font-size:13.5px;border-left:3px solid var(--accent);padding-left:10px}
+.cmd{margin-top:auto;display:flex;align-items:center;gap:8px;background:var(--code);border-radius:10px;padding:8px 8px 8px 12px}
+.cmd code{flex:1;font-size:12px;overflow-x:auto;white-space:nowrap;scrollbar-width:thin}
+.copy{flex:none;border:0;background:var(--ink);color:var(--bg);border-radius:7px;font:600 12px Inter,sans-serif;padding:6px 10px;cursor:pointer;transition:transform .15s}
+.copy:active{transform:scale(.94)}
+.copy.ok{background:var(--accent3)}
+.empty{text-align:center;color:var(--muted);padding:50px 0;display:none}
+
+/* ---------- stacks ---------- */
+.stacks{display:grid;gap:16px}
+@media(min-width:760px){.stacks{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1080px){.stacks{grid-template-columns:repeat(3,1fr)}}
+.stack{border-radius:20px;padding:24px;background:var(--bg2);border:1px solid var(--line);box-shadow:var(--shadow);position:relative;overflow:hidden}
+.stack .em{font-size:30px}
+.stack h3{font-family:Fraunces,serif;font-size:22px;margin:8px 0 4px}
+.stack > p{color:var(--muted);font-size:14px;margin-bottom:14px}
+.stack ol{list-style:none;display:flex;flex-direction:column;gap:8px;counter-reset:s}
+.stack li{counter-increment:s;display:flex;gap:10px;font-size:14.5px;align-items:baseline}
+.stack li::before{content:counter(s);flex:none;width:22px;height:22px;border-radius:50%;background:var(--code);font:700 12px Inter;display:grid;place-items:center;color:var(--accent)}
+.stack li b{font-weight:600}
+.stack li span{color:var(--muted)}
+.stack.you{border:2px solid var(--accent);background:linear-gradient(160deg,var(--glow),var(--bg2) 55%)}
+.badge{position:absolute;top:18px;right:18px;font:700 11px Inter;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+
+/* ---------- tier legend & tips ---------- */
+.legend{display:grid;gap:14px}
+@media(min-width:760px){.legend{grid-template-columns:repeat(3,1fr)}}
+.lg{padding:18px;border-radius:16px;border:1px solid var(--line);background:var(--bg2)}
+.lg .tier{display:inline-block;margin-bottom:8px}
+.lg p{color:var(--muted);font-size:14px}
+.tips{display:grid;gap:14px}
+@media(min-width:760px){.tips{grid-template-columns:repeat(2,1fr)}}
+.tip{display:flex;gap:14px;padding:18px;border-radius:16px;background:var(--bg2);border:1px solid var(--line)}
+.tip .ic{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:20px;background:var(--code)}
+.tip h4{font-size:16px;margin-bottom:2px}
+.tip p{font-size:14px;color:var(--muted)}
+
+footer{padding:50px 0 70px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
+footer h3{color:var(--ink);font-size:16px;margin-bottom:10px}
+footer ul{list-style:none;display:grid;gap:6px}
+@media(min-width:760px){footer ul{grid-template-columns:1fr 1fr}}
+footer a{color:var(--accent);text-decoration:none}footer a:hover{text-decoration:underline}
+.note{margin-top:24px;font-size:13px}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,120px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:600;font-size:14px;transition:transform .35s cubic-bezier(.2,.7,.2,1);z-index:99}
+.toast.show{transform:translate(-50%,0)}
+
+/* ---------- craft section ---------- */
+.sub{font-family:Fraunces,serif;font-size:clamp(22px,3vw,28px);margin:48px 0 16px;line-height:1.2}
+.sub small{display:block;font-family:Inter,sans-serif;font-size:14px;color:var(--muted);font-weight:400;margin-top:4px}
+.tells{display:grid;gap:14px}
+@media(min-width:760px){.tells{grid-template-columns:repeat(2,1fr)}}
+.tell{background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow)}
+.tell h4{font-size:16px;display:flex;gap:10px;align-items:baseline}
+.tell h4 span{font-family:Fraunces,serif;color:var(--accent);font-size:20px}
+.pair{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
+.pair figure{margin:0;display:flex;flex-direction:column;gap:5px}
+.pair svg{width:100%;display:block;border-radius:10px;border:1px solid var(--line);overflow:hidden}
+.pair figcaption{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.pair .bad figcaption{color:#d64545}
+.pair .good figcaption{color:var(--accent3)}
+.pair .arrow{color:var(--muted);font-size:18px}
+.pair .good svg{transition:transform .4s cubic-bezier(.2,.7,.2,1)}
+.tell:hover .pair .good svg{transform:scale(1.04)}
+.tell p{font-size:13.5px;color:var(--muted)}
+.tell p b{color:var(--ink)}
+.pipe{display:grid;gap:12px}
+@media(min-width:960px){.pipe{grid-template-columns:repeat(5,1fr)}}
+.pstep{position:relative;background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow)}
+.pstep .n{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;font-size:14px;margin-bottom:10px}
+.pstep h4{font-size:15px;margin-bottom:4px}
+.pstep p{font-size:13px;color:var(--muted)}
+.pstep .tools{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px}
+.pstep .tools span{font-size:11px;font-weight:600;padding:2px 7px;border-radius:6px;background:var(--code);color:var(--muted)}
+@media(min-width:960px){.pstep:not(:last-child)::after{content:"";position:absolute;right:-13px;top:30px;width:14px;height:2px;background:repeating-linear-gradient(90deg,var(--accent) 0 4px,transparent 4px 7px);z-index:2}}
+.two{display:grid;gap:18px}
+@media(min-width:1040px){.two{grid-template-columns:1fr 1.25fr;align-items:start}}
+.checklist{background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow)}
+.ck-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-weight:700}
+.ck-head span{font:600 13px "JetBrains Mono",monospace;color:var(--accent)}
+.ck-bar{height:8px;border-radius:8px;background:var(--code);overflow:hidden;margin-bottom:10px}
+.ck-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent3));transition:width .5s cubic-bezier(.2,.7,.2,1)}
+.ck{display:flex;gap:10px;align-items:flex-start;padding:7px 6px;font-size:14px;cursor:pointer;border-radius:8px}
+.ck:hover{background:var(--code)}
+.ck input{appearance:none;-webkit-appearance:none;flex:none;width:18px;height:18px;border:2px solid var(--muted);border-radius:5px;margin-top:2px;display:grid;place-items:center;transition:all .2s;cursor:pointer}
+.ck input:checked{background:var(--accent3);border-color:var(--accent3)}
+.ck input:checked::after{content:"✓";color:#fff;font-size:12px;font-weight:700;line-height:1}
+.ck input:checked + span{color:var(--muted);text-decoration:line-through}
+.kit{background:#151412;border-radius:18px;border:1px solid #2a2824;overflow:hidden;display:flex;flex-direction:column;min-width:0;box-shadow:var(--shadow)}
+.kit-tabs{display:flex;gap:4px;padding:10px;overflow-x:auto;border-bottom:1px solid #2a2824}
+.kit-tabs button{flex:none;border:0;background:transparent;color:#a39c90;font:600 13px Inter,sans-serif;padding:7px 12px;border-radius:8px;cursor:pointer}
+.kit-tabs button.on{background:#2a2824;color:#f1ede6}
+.kit-path{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 16px;font:12px "JetBrains Mono",monospace;color:#8a8478}
+.kit .copy{background:#f1ede6;color:#151412}
+.kit pre{margin:0;padding:0 16px 18px;color:#e9e4da;font:12.5px/1.65 "JetBrains Mono",monospace;overflow:auto;max-height:460px;white-space:pre}
+.kit .note{padding:0 16px 14px;font-size:12px;color:#8a8478}
+
+/* ---------- card illustrations ---------- */
+.ill{margin:-20px -20px 4px;height:150px;border-bottom:1px solid var(--line);background:radial-gradient(120% 90% at 0% 0%,color-mix(in srgb,var(--accent) 10%,var(--code)),var(--code) 60%),var(--code);position:relative}
+.ill svg{display:block;width:100%;height:100%}
+.ill text{font-family:Inter,system-ui,sans-serif;font-weight:500}
+.f1{fill:var(--accent)}.f2{fill:var(--accent2)}.f3{fill:var(--accent3)}.fm{fill:var(--muted)}.fl{fill:var(--line)}
+.fc{fill:var(--code)}.fb{fill:var(--bg2)}.fi{fill:var(--ink)}.fr{fill:#e5534b}.tw{fill:#fff}.tb{fill:var(--bg)}
+.ti{fill:var(--ink)}.tm{fill:var(--muted)}
+.sl{stroke:var(--line)}.sm{stroke:var(--muted)}.s1{stroke:var(--accent)}.s2{stroke:var(--accent2)}.s3{stroke:var(--accent3)}
+.sr{stroke:#e5534b}.si{stroke:var(--ink)}.nf{fill:none}
+.tryget{display:grid;gap:6px;font-size:13.5px}
+.tryget div{background:var(--code);border-radius:10px;padding:8px 11px;line-height:1.45}
+.tryget span{display:block;font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+.tryget div:last-child span{color:var(--accent3)}
+.tryget q{font-style:italic;quotes:"“" "”"}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="logo" href="#top">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2v20M2 12h20M4.9 4.9l14.2 14.2M19.1 4.9 4.9 19.1" stroke="var(--accent)" stroke-width="2.4" stroke-linecap="round"/></svg>
+      Skills Field Guide
+    </a>
+    <div class="navlinks">
+      <a href="#how">How skills work</a>
+      <a href="#explore">Explorer</a>
+      <a href="#stacks">Starter stacks</a>
+      <a href="#human">Avoid the AI look</a>
+      <a href="#safety">Safety</a>
+      <a href="#sources">Sources</a>
+    </div>
+    <button class="themebtn" id="theme" aria-label="Toggle theme">◐</button>
+  </div>
+  <div class="progress" id="prog"></div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="grid-bg"></div>
+  <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot"></span>Researched October 21, 2026</span>
+    <h1>The best <span class="grad">Claude skills</span> worth installing right now</h1>
+    <p class="lede">A guide to the skills that make Claude better at <span class="typed" id="typed">software engineering</span><br>Tiered and grouped by field, each with an install command you can copy.</p>
+    <div class="stats">
+      <div class="stat"><b data-count="0" id="statSkills">0</b><span>skills reviewed</span></div>
+      <div class="stat"><b data-count="0" id="statCats">0</b><span>fields covered</span></div>
+      <div class="stat"><b data-count="0" id="statS">0</b><span>S-tier must-haves</span></div>
+      <div class="stat"><b data-count="6">0</b><span>ready-made stacks</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- HOW -->
+<section id="how">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">01 · Primer</span>
+      <h2>What a skill actually is</h2>
+      <p>A skill is a folder containing a <code>SKILL.md</code> file and, optionally, scripts and reference files. Claude loads it in stages. You can install dozens of skills, and each one stays almost free until a task needs it.</p>
+    </div>
+    <div class="flow">
+      <div class="step reveal"><div class="n">1</div><h3>Metadata is always loaded</h3><p>Only the skill's name and one-line description sit in context. Claude uses them to decide when the skill applies.</p><div class="bar"><i style="--w:6%"></i></div><small>~ tens of tokens per skill</small></div>
+      <div class="step reveal"><div class="n">2</div><h3>SKILL.md loads when it applies</h3><p>When a task matches, Claude reads the instructions: the workflow, conventions and checklists.</p><div class="bar"><i style="--w:38%"></i></div><small>~ a few thousand tokens, only when used</small></div>
+      <div class="step reveal"><div class="n">3</div><h3>Resources load on demand</h3><p>Scripts, templates and reference docs are opened or executed only when a specific step needs them.</p><div class="bar"><i style="--w:100%"></i></div><small>effectively unbounded, paid for only when used</small></div>
+    </div>
+    <div class="install">
+      <div class="term reveal">
+        <div class="bar3"><i></i><i></i><i></i></div>
+        <h4>Inside Claude Code: plugin marketplaces</h4>
+        <div><span class="c"># add a marketplace, then install from it</span></div>
+        <div><span class="p">›</span> /plugin marketplace add anthropics/skills</div>
+        <div><span class="p">›</span> /plugin install example-skills@anthropic-agent-skills</div>
+        <div><span class="p">›</span> /plugin install document-skills@anthropic-agent-skills</div>
+      </div>
+      <div class="term reveal">
+        <div class="bar3"><i></i><i></i><i></i></div>
+        <h4>From your shell: the skills CLI</h4>
+        <div><span class="c"># any GitHub repo that contains SKILL.md files</span></div>
+        <div><span class="p">$</span> npx skills add &lt;owner&gt;/&lt;repo&gt; --skill &lt;name&gt;</div>
+        <div><span class="c"># or by hand: drop the folder into</span></div>
+        <div><span class="p">$</span> ~/.claude/skills/&lt;name&gt;/SKILL.md</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIERS -->
+<section style="padding-top:10px">
+  <div class="wrap">
+    <div class="legend">
+      <div class="lg reveal"><span class="tier S">S · MUST-HAVE</span><p>Recommended across nearly every 2026 roundup and useful on almost any project. Install these first.</p></div>
+      <div class="lg reveal"><span class="tier A">A · STRONG</span><p>Clearly useful within its field. Add it when you work in that area.</p></div>
+      <div class="lg reveal"><span class="tier B">B · SITUATIONAL</span><p>Good at a narrow job. Install it when you need that job done, not just in case.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPLORER -->
+<section id="explore">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">02 · Explorer</span>
+      <h2>Every recommended skill, by field</h2>
+      <p>Filter by field or tier, or search by name. Each card has an animated illustration of the skill at work, an example prompt with what you get back, why the skill is on the list, and a one-click install command.</p>
+    </div>
+    <div class="controls">
+      <label class="search"><span aria-hidden="true">⌕</span><input id="q" placeholder="Search skills, e.g. godot, react, security…" autocomplete="off"><kbd>/</kbd></label>
+      <div class="chips" id="cats"></div>
+      <div class="tierf" id="tiers"><span>Tier:</span></div>
+    </div>
+    <div class="cards" id="cards"></div>
+    <div class="empty" id="empty">No skills match. Try another search term or clear the filters.</div>
+  </div>
+</section>
+
+<!-- STACKS -->
+<section id="stacks">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">03 · Recipes</span>
+      <h2>Starter stacks by kind of work</h2>
+      <p>Don't install everything. Skills overlap, and too many descriptions competing for the same task make triggering less reliable. Choose the stack closest to your work and add more only as you need them.</p>
+    </div>
+    <div class="stacks">
+      <div class="stack you reveal"><span class="badge">For your site</span><div class="em">✋</div><h3>Websites that don't look AI-made</h3><p>Each layer catches problems the others miss. Together they produce a site that looks like a design team built it.</p>
+        <ol><li><b>DESIGN.md</b>&nbsp;<span>written first, from real references</span></li><li><b>frontend-design + Impeccable</b></li><li><b>avoid-ai-design hook</b>&nbsp;<span>catches tells on every edit</span></li><li><b>design-reviewer agent + Playwright</b></li><li><b>Figma MCP or 21st.dev</b>&nbsp;<span>build from real designs and components</span></li></ol></div>
+      <div class="stack you reveal"><span class="badge">Your setup</span><div class="em">🏗️</div><h3>.NET / Revit plugin engineer</h3><p>For your C# add-in work: disciplined changes, reviewed diffs and safe releases.</p>
+        <ol><li><b>Superpowers</b>&nbsp;<span>plans first, uses TDD</span></li><li><b>Karpathy Guidelines</b>&nbsp;<span>keeps diffs surgical</span></li><li><b>/code-review + /security-review</b>&nbsp;<span>run before every MR</span></li><li><b>Grill Me</b>&nbsp;<span>pressure-tests a plan before coding</span></li><li><b>Handoff</b>&nbsp;<span>carries context across long release work</span></li></ol></div>
+      <div class="stack reveal"><div class="em">⚡</div><h3>Day-one essentials</h3><p>Install these on every machine, whatever you build.</p>
+        <ol><li><b>Superpowers</b></li><li><b>Karpathy Guidelines</b></li><li><b>skill-creator</b>&nbsp;<span>build your own skills</span></li><li><b>Trail of Bits Security</b></li><li><b>Context7</b>&nbsp;<span>up-to-date library docs</span></li></ol></div>
+      <div class="stack reveal"><div class="em">🌐</div><h3>Full-stack web</h3><p>React or Next.js apps that look designed and pass audits.</p>
+        <ol><li><b>frontend-design</b></li><li><b>Vercel React Best Practices</b></li><li><b>web-design-guidelines</b></li><li><b>webapp-testing</b> or <b>Playwright MCP</b></li><li><b>Composition Patterns</b></li></ol></div>
+      <div class="stack reveal"><div class="em">🎨</div><h3>Designer–developer</h3><p>From exploring directions to shipping polished, accessible UI.</p>
+        <ol><li><b>frontend-design</b>&nbsp;<span>sets the baseline</span></li><li><b>Impeccable</b> or <b>Taste Skill</b>&nbsp;<span>pick one, they overlap</span></li><li><b>design plugin</b>&nbsp;<span>critique, handoff, a11y</span></li><li><b>theme-factory</b></li><li><b>AccessLint</b></li></ol></div>
+      <div class="stack reveal"><div class="em">🎮</div><h3>Indie game dev (Godot)</h3><p>Godot's text-based scenes and GDScript suit an agent well.</p>
+        <ol><li><b>godot-gdscript-patterns</b></li><li><b>godot-best-practices</b></li><li><b>game-feel</b>&nbsp;<span>adds juice</span></li><li><b>godot-ui</b></li><li><b>game-design-theory</b></li></ol></div>
+      <div class="stack reveal"><div class="em">🕹️</div><h3>Unity / Unreal / web games</h3><p>Engines with heavy editors need tighter guidance.</p>
+        <ol><li><b>unity-ecs-patterns</b> or <b>unreal-engine-cpp-pro</b></li><li><b>game-developer</b>&nbsp;<span>covers both engines</span></li><li><b>multiplayer-game</b></li><li><b>game-engine</b>&nbsp;<span>for HTML5 and WebGL</span></li><li><b>game-feel</b></li></ol></div>
+    </div>
+  </div>
+</section>
+
+<!-- HUMAN-MADE -->
+<section id="human">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">04 · Craft</span>
+      <h2>Make your site look like real developers built it</h2>
+      <p>AI-generated sites share recognizable defaults, and visitors notice them quickly. No single skill removes all of them. What works is layering: give Claude a real design spec, catch the defaults automatically on every edit, and have a reviewer agent check the rendered page the way a senior designer would. New picks for this are in the Explorer under <b>✋ Craft &amp; anti-AI-look</b>.</p>
+    </div>
+
+    <h3 class="sub reveal">The 10 tells of an AI-generated site<small>Each card shows the default on the left and the crafted version on the right, with the fix.</small></h3>
+    <div class="tells" id="tells"></div>
+
+    <h3 class="sub reveal">The anti-AI-look pipeline<small>Five layers, each catching what the previous one misses.</small></h3>
+    <div class="pipe">
+      <div class="pstep reveal"><div class="n">1</div><h4>Define the taste</h4><p>Write a DESIGN.md before any UI exists: real references, color roles, a type pairing, spacing and radius scales, and the voice.</p><div class="tools"><span>DESIGN.md</span><span>awesome-design-md</span><span>Stitch</span><span>Google Fonts</span></div></div>
+      <div class="pstep reveal"><div class="n">2</div><h4>Build from real parts</h4><p>Generate with skills that commit to a direction, using components that real developers published, restyled to your tokens.</p><div class="tools"><span>frontend-design</span><span>Impeccable</span><span>Figma MCP</span><span>21st.dev</span><span>shadcn</span></div></div>
+      <div class="pstep reveal"><div class="n">3</div><h4>Catch defaults automatically</h4><p>A hook scans every edit for AI tells, so Claude fixes them in the same turn instead of you spotting them later.</p><div class="tools"><span>avoid-ai-design hook</span><span>Impeccable hooks</span></div></div>
+      <div class="pstep reveal"><div class="n">4</div><h4>Review the rendered page</h4><p>A reviewer subagent opens the real page at three widths, takes screenshots, and checks it against DESIGN.md, the states and accessibility.</p><div class="tools"><span>design-reviewer agent</span><span>Playwright</span><span>/design:design-critique</span><span>web-design-guidelines</span></div></div>
+      <div class="pstep reveal"><div class="n">5</div><h4>Add the human details</h4><p>The things AI skips: real content and photos, edited copy, 404 and empty states, favicon and OG image, and performance.</p><div class="tools"><span>/impeccable polish</span><span>webapp-testing</span><span>you</span></div></div>
+    </div>
+
+    <h3 class="sub reveal">Ship checklist and copy-paste kit<small>Tick items as you go (saved in this browser). Copy the files into your project.</small></h3>
+    <div class="two">
+      <div class="checklist reveal">
+        <div class="ck-head">Does it look human-made? <span id="ckCount">0/16</span></div>
+        <div class="ck-bar"><i id="ckBar"></i></div>
+        <div id="ckList"></div>
+      </div>
+      <div class="kit reveal">
+        <div class="kit-tabs" id="kitTabs"></div>
+        <div class="kit-path"><span id="kitPath"></span><button class="copy" id="kitCopy">Copy</button></div>
+        <pre id="kitCode"></pre>
+        <div class="note" id="kitNote"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SAFETY -->
+<section id="safety">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">05 · Field notes</span>
+      <h2>Install wisely</h2>
+    </div>
+    <div class="tips">
+      <div class="tip reveal"><div class="ic">🔍</div><div><h4>Read SKILL.md before installing</h4><p>Skills can include scripts that run shell commands and read your files. Treat a community skill like any other dependency: read it, pin it, and prefer well-known authors.</p></div></div>
+      <div class="tip reveal"><div class="ic">🧩</div><div><h4>Avoid overlapping skills</h4><p>Taste, Impeccable and UI/UX Pro Max all target the same problem. When two descriptions match the same task, Claude may pick the wrong one. Keep one skill per job.</p></div></div>
+      <div class="tip reveal"><div class="ic">📊</div><div><h4>Install counts are rough signals</h4><p>Install and star counts come from directories and vendor blogs, and many roundups are written by companies that rank their own tools. The tiers here reward picks that independent lists agree on.</p></div></div>
+      <div class="tip reveal"><div class="ic">🛠️</div><div><h4>Write your own skill when none fits</h4><p>When you've explained the same convention to Claude three times, use <code>skill-creator</code> to turn it into a skill. Team-specific skills often beat anything public.</p></div></div>
+      <div class="tip reveal"><div class="ic">🏢</div><div><h4>Project skills vs. personal skills</h4><p>Put repo conventions in <code>.claude/skills/</code> so your team gets them through git. Keep personal workflow skills in <code>~/.claude/skills/</code>.</p></div></div>
+      <div class="tip reveal"><div class="ic">🎯</div><div><h4>Game engines: text-based formats work best</h4><p>Godot's text scenes work well with Claude. Unity and Unreal keep much of their state in binary assets and the editor, so expect to supply more context there.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<footer id="sources">
+  <div class="wrap">
+    <h3>Sources</h3>
+    <ul>
+      <li><a href="https://github.com/anthropics/skills" target="_blank" rel="noopener">anthropics/skills (official repo)</a></li>
+      <li><a href="https://www.firecrawl.dev/blog/best-claude-code-skills" target="_blank" rel="noopener">Firecrawl: 14 Best Claude Code Skills (2026)</a></li>
+      <li><a href="https://claudeskills.info/best/gaming-skills/" target="_blank" rel="noopener">claudeskills.info: Best Game Dev Skills (2026)</a></li>
+      <li><a href="https://www.superdesign.dev/blog/best-claude-code-skills" target="_blank" rel="noopener">Superdesign: Best Claude Code Skills for design</a></li>
+      <li><a href="https://composio.dev/content/top-claude-skills" target="_blank" rel="noopener">Composio: Top 10 Claude Code Skills</a></li>
+      <li><a href="https://fast.io/resources/awesome-claude-skills-directory-2026/" target="_blank" rel="noopener">fast.io: 2026 Curated Directory</a></li>
+      <li><a href="https://www.taskade.com/blog/claude-code-skills" target="_blank" rel="noopener">Taskade: Best Claude Code Skills (2026)</a></li>
+      <li><a href="https://nimbalyst.com/blog/best-claude-code-skills-2026/" target="_blank" rel="noopener">Nimbalyst: Best Claude Code Skills (Ranked)</a></li>
+      <li><a href="https://www.agensi.io/learn/best-claude-code-skills-2026" target="_blank" rel="noopener">Agensi: 12 Best Claude Code Skills (2026)</a></li>
+      <li><a href="https://chierhu.medium.com/claude-code-for-game-development-7a88fcd19992" target="_blank" rel="noopener">Medium: Claude Code for Game Development</a></li>
+      <li><a href="https://uxplanet.org/ive-tested-3-popular-claude-code-skills-for-web-design-24b7866e05a7" target="_blank" rel="noopener">UX Planet: 3 popular web design skills tested</a></li>
+      <li><a href="https://codegen.com/skills/frontend-design/" target="_blank" rel="noopener">Codegen: frontend-design skill</a></li>
+      <li><a href="https://github.com/funboy322/avoid-ai-design" target="_blank" rel="noopener">funboy322/avoid-ai-design</a></li>
+      <li><a href="https://impeccable.style" target="_blank" rel="noopener">Impeccable: install &amp; commands</a></li>
+      <li><a href="https://github.com/OneRedOak/claude-code-workflows" target="_blank" rel="noopener">OneRedOak/claude-code-workflows (design review)</a></li>
+      <li><a href="https://www.chaseai.io/blog/claude-code-frontend-design-skills" target="_blank" rel="noopener">Chase AI: 10 frontend design skills</a></li>
+      <li><a href="https://www.chaseai.io/blog/fix-claude-code-web-design-ai-slop" target="_blank" rel="noopener">Chase AI: fixing AI slop in web design</a></li>
+      <li><a href="https://pasqualepillitteri.it/en/news/1251/google-stitch-design-md-open-source-spec-2026" target="_blank" rel="noopener">Google Stitch open-sources DESIGN.md</a></li>
+      <li><a href="https://www.mindstudio.ai/blog/awesome-design-md-github-claude-code-brand-systems" target="_blank" rel="noopener">MindStudio: awesome-design-md</a></li>
+      <li><a href="https://developers.figma.com/docs/figma-mcp-server/remote-server-installation" target="_blank" rel="noopener">Figma: remote MCP server installation</a></li>
+      <li><a href="https://lobehub.com/mcp/21st-dev-21mcp" target="_blank" rel="noopener">LobeHub: 21st.dev Magic MCP</a></li>
+      <li><a href="https://mcpmarket.com/tools/skills/design-anti-slop" target="_blank" rel="noopener">MCP Market: Design Anti-Slop</a></li>
+    </ul>
+    <p class="note">Compiled October 21, 2026. Install commands follow each repo's README at that date. Skills change quickly, so check a repo before installing.</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast">Copied to clipboard</div>
+
+<script>
+const AN = "https://github.com/anthropics/skills";
+const npx = (repo, skill) => `npx skills add ${repo}${skill ? ` --skill ${skill}` : ""}`;
+
+const CATS = {
+  craft:    {label:"Craft & Anti-AI-Look", icon:"✋"},
+  workflow: {label:"Workflow & Agent Behavior", icon:"🧠"},
+  swe:      {label:"Software Engineering", icon:"⚙️"},
+  web:      {label:"Web & Frontend", icon:"🌐"},
+  design:   {label:"Design & UI", icon:"🎨"},
+  game:     {label:"Game Development", icon:"🎮"},
+  security: {label:"Security", icon:"🛡️"},
+  testing:  {label:"Testing & QA", icon:"🧪"},
+  docs:     {label:"Docs & Office", icon:"📄"},
+  media:    {label:"Media & Creative", icon:"🎬"},
+};
+
+const SKILLS = [
+  // ---- craft / anti-AI-look
+  {n:"avoid-ai-design", by:"funboy322/avoid-ai-design", cat:"craft", tier:"S", tags:["67 tells","scanner","hook"],
+   d:"Audits frontend code for 67 AI tells, such as purple gradients, Inter everywhere, a centered hero over three cards, untouched shadcn defaults and cream with terracotta, then rewrites them. Includes a zero-dependency scanner.",
+   why:"The only pick here that checks automatically. As a hook it flags tells on every edit, and as a CI gate it fails the build.", cmd:npx("funboy322/avoid-ai-design")},
+  {n:"Impeccable", by:"pbakaus/impeccable", cat:"craft", tier:"S", tags:["18+ commands","/polish","hooks"],
+   d:"Teaches Claude what AI slop looks like using concrete anti-patterns, then gives you commands such as /critique, /audit, /typeset, /layout, /colorize, /polish and /bolder, plus optional automatic checks.",
+   why:"The most complete craft toolkit. Run /impeccable init first so it knows your product.", cmd:"/plugin marketplace add pbakaus/impeccable"},
+  {n:"DESIGN.md + awesome-design-md", by:"Google Labs spec · community library", cat:"craft", tier:"S", tags:["spec","brand tokens","references"],
+   d:"DESIGN.md does for visual rules what CLAUDE.md does for behavior: atmosphere, color roles, type and component rules in one file. awesome-design-md collects dozens of them, reverse-engineered from real brands.",
+   why:"Specific references beat “make it look good”. Start from a real brand's system, then make it your own. A starter is in the kit below.", cmd:"Put DESIGN.md in the repo root and reference it from CLAUDE.md"},
+  {n:"Design Review agent", by:"OneRedOak/claude-code-workflows", cat:"craft", tier:"A", tags:["subagent","Playwright","screenshots"],
+   d:"A dedicated reviewer subagent that opens the live page in a browser, tests several viewport widths, checks accessibility, and reports issues by severity with screenshots.",
+   why:"Reviews what users actually see, not just the code. A ready-to-copy version is in the kit below.", cmd:"git clone https://github.com/OneRedOak/claude-code-workflows"},
+  {n:"Figma MCP", by:"Figma (official plugin)", cat:"craft", tier:"A", tags:["MCP","design-to-code","variables"],
+   d:"Gives Claude the actual frames, variables and components from your Figma file, so it implements a real design instead of inventing one.",
+   why:"If a designer is involved, or you design in Figma yourself, this produces the most human-looking result.", cmd:"claude plugin install figma@claude-plugins-official"},
+  {n:"21st.dev Magic MCP", by:"21st-dev/magic", cat:"craft", tier:"A", tags:["MCP","components","API key"],
+   d:"Generates components based on 21st.dev's library of community-built UI, such as heroes, cards, buttons and borders, instead of generic markup.",
+   why:"Starts from components that real front-end developers published. Needs a 21st.dev API key.", cmd:"npx -y @21st-dev/magic@latest   # add to .mcp.json with API_KEY"},
+  {n:"Google Fonts", by:"Google", cat:"craft", tier:"A", tags:["type pairing","free"],
+   d:"A free type library Claude can search for a display and body pairing that fits your brand, instead of defaulting to Inter for everything.",
+   why:"Typography is the quickest giveaway. A deliberate pairing alone makes a page look less generic.", cmd:"fonts.google.com, then name the pairing in DESIGN.md"},
+  {n:"shadcn MCP", by:"shadcn/ui (official)", cat:"craft", tier:"B", tags:["MCP","registry","blocks"],
+   d:"Lets Claude search and install components and blocks from shadcn registries instead of hand-writing them.",
+   why:"Solid, accessible building blocks. Restyle them, though: untouched shadcn defaults are a known AI tell.", cmd:"npx shadcn@latest mcp init"},
+  {n:"Google Stitch", by:"Google Labs", cat:"craft", tier:"B", tags:["layout variations","DESIGN.md export"],
+   d:"A visual design tool that generates layout variations and a DESIGN.md you can export to Claude Code.",
+   why:"A quick way to explore directions visually before writing any code.", cmd:"stitch.withgoogle.com, then export DESIGN.md"},
+  {n:"Skill UI", by:"community project (GitHub)", cat:"craft", tier:"B", tags:["reverse-engineer","Playwright"],
+   d:"Extracts a live website's design system into a reusable Claude Code skill. Its Ultra mode uses Playwright to read the rendered page.",
+   why:"Useful for learning from a site you admire. Use it as a reference, and don't clone someone else's brand.", cmd:"Search GitHub for “Skill UI” and read its SKILL.md first"},
+  {n:"Design Anti-Slop", by:"MCP Market listing", cat:"craft", tier:"B", tags:["scanner","lightweight"],
+   d:"Scans a project for low-effort patterns such as purple-cyan mesh gradients, floating 3D shapes and Inter defaults.",
+   why:"A lighter alternative to avoid-ai-design. It flags problems but doesn't teach design principles.", cmd:"mcpmarket.com/tools/skills/design-anti-slop"},
+
+  // ---- workflow
+  {n:"Superpowers", by:"obra/superpowers", cat:"workflow", tier:"S", tags:["TDD","planning","subagents"],
+   d:"Splits development into stages: brainstorm, write a plan, execute with subagents, enforce test-driven development, then review.",
+   why:"The single most-recommended skill across 2026 roundups.", cmd:npx("obra/superpowers")},
+  {n:"Andrej Karpathy Guidelines", by:"forrestchang/andrej-karpathy-skills", cat:"workflow", tier:"S", tags:["behavior","diff hygiene"],
+   d:"Four behavioral rules that target the most common LLM coding failures: wrong assumptions, overengineering and edits to unrelated code.",
+   why:"Small skill with a large effect. Diffs stay focused.", cmd:"/plugin marketplace add forrestchang/andrej-karpathy-skills"},
+  {n:"skill-creator", by:"anthropics/skills", cat:"workflow", tier:"S", tags:["official","meta","evals"],
+   d:"Anthropic's skill for writing, testing and improving skills, including evals and tuning a description so the skill triggers reliably.",
+   why:"Use it to turn your team's conventions into reusable skills.", cmd:npx(AN,"skill-creator")},
+  {n:"Grill Me", by:"mattpocock/skills", cat:"workflow", tier:"A", tags:["planning","requirements"],
+   d:"Has Claude interview you about a plan until you both understand it, before any code is written.",
+   why:"Surfaces missing requirements before they turn into rework.", cmd:npx("https://github.com/mattpocock/skills","grill-me")},
+  {n:"Handoff", by:"mattpocock/skills", cat:"workflow", tier:"A", tags:["context","long tasks"],
+   d:"Compresses the current session into a markdown brief that a fresh session or another agent can pick up from.",
+   why:"Continues long tasks after the context window fills.", cmd:npx("mattpocock/skills","handoff")},
+  {n:"Context Mode", by:"mksglu/context-mode", cat:"workflow", tier:"B", tags:["tokens","context"],
+   d:"Filters noisy shell output before it reaches context and restores session state after a reset.",
+   why:"Useful with chatty builds, such as MSBuild or webpack logs.", cmd:"/plugin marketplace add mksglu/context-mode"},
+  {n:"Caveman", by:"JuliusBrussee/caveman", cat:"workflow", tier:"B", tags:["tokens","terse output"],
+   d:"Strips filler from Claude's replies and keeps the technical content, which saves output tokens.",
+   why:"For heavy users who care more about cost than readable prose.", cmd:"curl -fsSL https://raw.githubusercontent.com/JuliusBrussee/caveman/main/install.sh | bash"},
+
+  // ---- swe
+  {n:"/code-review · /simplify", by:"built into Claude Code", cat:"swe", tier:"S", tags:["bundled","review","refactor"],
+   d:"Built-in skills. /code-review finds correctness bugs in the current diff or a PR at a chosen effort level. /simplify finds reuse and simplification cleanups and applies them.",
+   why:"Already installed. Run them before every commit or merge request.", cmd:"/code-review high"},
+  {n:"mcp-builder", by:"anthropics/skills", cat:"swe", tier:"A", tags:["official","MCP","integrations"],
+   d:"Guides Claude through designing and building high-quality MCP servers that connect it to your APIs and tools.",
+   why:"The quickest way to give Claude access to your internal systems.", cmd:npx(AN,"mcp-builder")},
+  {n:"claude-api", by:"anthropics/skills", cat:"swe", tier:"A", tags:["official","SDK","agents"],
+   d:"Current reference for the Claude API and SDKs: model IDs, tool use, caching, streaming and agent patterns.",
+   why:"Stops Claude from using outdated model names or API parameters.", cmd:npx(AN,"claude-api")},
+  {n:"Context7", by:"upstash/context7 (MCP)", cat:"swe", tier:"A", tags:["docs","MCP","libraries"],
+   d:"An MCP server rather than a skill. It fetches current, version-specific library documentation into context when needed.",
+   why:"Pairs with any skill to cut hallucinated APIs, especially for fast-changing libraries.", cmd:"claude mcp add context7 -- npx -y @upstash/context7-mcp"},
+  {n:"Firecrawl Developer Index", by:"firecrawl/firecrawl-cli", cat:"swe", tier:"B", tags:["research","GitHub"],
+   d:"Searches GitHub issues, pull requests, READMEs and docs for primary sources when debugging or researching.",
+   why:"Lets Claude check a fix against the actual issue thread.", cmd:"npx -y firecrawl-cli@latest setup developer-index"},
+  {n:"Composition Patterns", by:"vercel-labs/agent-skills", cat:"swe", tier:"B", tags:["API design","components"],
+   d:"Replaces sprawling boolean props with compound components and cleaner component APIs.",
+   why:"Teaches component API design that applies beyond React.", cmd:npx("https://github.com/vercel-labs/agent-skills","composition-patterns")},
+
+  // ---- web
+  {n:"frontend-design", by:"anthropics/skills", cat:"web", tier:"S", tags:["official","UI","anti-slop"],
+   d:"Makes Claude commit to a deliberate visual direction, with a real type scale, systematic spacing and no generic fonts, instead of generic AI-looking UI.",
+   why:"Reported as the most-installed design skill in the ecosystem.", cmd:npx(AN,"frontend-design")},
+  {n:"Vercel React Best Practices", by:"vercel-labs/agent-skills", cat:"web", tier:"A", tags:["React","Next.js","perf"],
+   d:"Performance rules for React and Next.js, ordered by impact: waterfalls, bundle size, rendering and data fetching.",
+   why:"Production rules from the team that builds Next.js.", cmd:npx("https://github.com/vercel-labs/agent-skills","vercel-react-best-practices")},
+  {n:"Web Design Guidelines", by:"vercel-labs/agent-skills", cat:"web", tier:"A", tags:["a11y","UX audit"],
+   d:"Checks UI code against more than 100 accessibility, performance and UX rules. It reviews code but doesn't design.",
+   why:"Pairs well with frontend-design: one creates, the other audits.", cmd:npx("https://github.com/vercel-labs/agent-skills","web-design-guidelines")},
+  {n:"web-artifacts-builder", by:"anthropics/skills", cat:"web", tier:"B", tags:["official","React","Tailwind"],
+   d:"Builds complex multi-component HTML artifacts with React, Tailwind and shadcn/ui, bundled into a single file.",
+   why:"Good for prototypes and internal tools that need to ship as one file.", cmd:npx(AN,"web-artifacts-builder")},
+
+  // ---- testing
+  {n:"webapp-testing", by:"anthropics/skills", cat:"testing", tier:"A", tags:["official","Playwright","E2E"],
+   d:"Drives your local web app in a real browser with Playwright to check behavior, capture screenshots and read console logs.",
+   why:"Claude checks the UI it built instead of assuming it works.", cmd:npx(AN,"webapp-testing")},
+  {n:"Playwright MCP", by:"microsoft/playwright-mcp", cat:"testing", tier:"A", tags:["MCP","browser"],
+   d:"An MCP server for browser automation through accessibility snapshots, which work for both exploration and testing.",
+   why:"Use it alongside webapp-testing for interactive debugging.", cmd:"claude mcp add playwright npx @playwright/mcp@latest"},
+
+  // ---- design
+  {n:"Taste Skill", by:"Leonxlnx/taste-skill", cat:"design", tier:"A", tags:["aesthetics","dials"],
+   d:"Design defaults that avoid generic AI looks, with three adjustable settings. Works in Claude Code, Cursor and Codex.",
+   why:"In a UX Planet test it produced more visually appealing results than frontend-design.", cmd:npx("Leonxlnx/taste-skill")},
+  {n:"design plugin (critique · handoff · a11y)", by:"anthropic knowledge-work plugin", cat:"design", tier:"A", tags:["installed for you","critique","handoff"],
+   d:"design-critique, design-handoff, design-system, accessibility-review, ux-copy and user-research. You already have these installed.",
+   why:"Covers designer workflows: reviewing screens, writing specs and auditing WCAG.", cmd:"/design:design-critique"},
+  {n:"UI/UX Pro Max", by:"nextlevelbuilder/ui-ux-pro-max-skill", cat:"design", tier:"B", tags:["palettes","type","database"],
+   d:"A searchable database of styles, palettes and font pairings that Claude queries through a CLI.",
+   why:"Gives the most variety, but in one test it took twice the time and tokens.", cmd:npx("nextlevelbuilder/ui-ux-pro-max-skill")},
+  {n:"Superdesign", by:"superdesigndev/superdesign-skill", cat:"design", tier:"B", tags:["canvas","variations"],
+   d:"A design agent that explores several UI directions on a canvas, then returns React and Tailwind code.",
+   why:"Useful for comparing several directions before committing to one. Requires a Superdesign account.", cmd:npx("superdesigndev/superdesign-skill")},
+  {n:"theme-factory", by:"anthropics/skills", cat:"design", tier:"B", tags:["official","themes"],
+   d:"Applies coherent, professional themes (palette and font pairing) to slides, docs, reports and pages.",
+   why:"Gives consistent visual styling across mixed output types.", cmd:npx(AN,"theme-factory")},
+  {n:"brand-guidelines", by:"anthropics/skills", cat:"design", tier:"B", tags:["official","brand"],
+   d:"A template for encoding your brand's colors and typography so every output follows them.",
+   why:"Fork it for your own brand. The official version uses Anthropic's.", cmd:npx(AN,"brand-guidelines")},
+  {n:"AccessLint", by:"accesslint/claude-marketplace", cat:"design", tier:"B", tags:["WCAG","contrast"],
+   d:"Checks contrast and WCAG compliance, with an MCP that calculates contrast ratios exactly.",
+   why:"Calculates contrast instead of guessing it.", cmd:"/plugin marketplace add accesslint/claude-marketplace"},
+  {n:"canvas-design", by:"anthropics/skills", cat:"design", tier:"B", tags:["official","posters","PNG/PDF"],
+   d:"Creates visual art such as posters and static designs as PNG or PDF, based on a written design philosophy.",
+   why:"Covers static graphics, which frontend-design doesn't.", cmd:npx(AN,"canvas-design")},
+
+  // ---- game
+  {n:"godot-gdscript-patterns", by:"wshobson/agents", cat:"game", tier:"S", tags:["Godot 4","GDScript"],
+   d:"Godot 4 patterns: signals, scene composition, state machines and performance tuning.",
+   why:"The most-installed game skill (~12.5K installs, per the directory). Godot pairs best with Claude.", cmd:npx("wshobson/agents","godot-gdscript-patterns")},
+  {n:"game-engine (web)", by:"github/awesome-copilot", cat:"game", tier:"A", tags:["HTML5","Canvas","WebGL"],
+   d:"Building web game engines and games with HTML5, Canvas, WebGL and JavaScript.",
+   why:"The best fit when your game runs in a browser.", cmd:npx("github/awesome-copilot","game-engine")},
+  {n:"unity-ecs-patterns", by:"wshobson/agents", cat:"game", tier:"A", tags:["Unity","DOTS","Burst"],
+   d:"Data-oriented Unity: ECS with DOTS, Jobs and Burst for games with very many entities.",
+   why:"Gives Claude solid DOTS guidance, which it often gets wrong unaided.", cmd:npx("wshobson/agents","unity-ecs-patterns")},
+  {n:"multiplayer-game", by:"rivet-dev/skills", cat:"game", tier:"A", tags:["netcode","matchmaking"],
+   d:"Multiplayer architecture: matchmaking, tick loops, real-time state, interest management and server-side validation.",
+   why:"Netcode is where unguided agents struggle most.", cmd:npx("rivet-dev/skills","multiplayer-game")},
+  {n:"game-feel", by:"gamedev-skills/awesome-gamedev-agent-skills", cat:"game", tier:"A", tags:["juice","polish"],
+   d:"Adds juice: screen shake, hit-stop, easing, squash and stretch, and layered feedback.",
+   why:"Makes prototypes feel responsive and fun to play.", cmd:npx("gamedev-skills/awesome-gamedev-agent-skills","game-feel")},
+  {n:"godot-best-practices", by:"jwynia/agent-skills", cat:"game", tier:"A", tags:["Godot","architecture"],
+   d:"Godot 4.x project structure: scene organization, signal flow and save systems.",
+   why:"Complements gdscript-patterns at the architecture level.", cmd:npx("jwynia/agent-skills","godot-best-practices")},
+  {n:"game-developer", by:"jeffallan/claude-skills", cat:"game", tier:"B", tags:["Unity","Unreal","shaders"],
+   d:"General Unity and Unreal systems knowledge: ECS, physics, networking, optimization and shaders.",
+   why:"One skill that covers several engines.", cmd:npx("jeffallan/claude-skills","game-developer")},
+  {n:"unreal-engine-cpp-pro", by:"sickn33/agentic-awesome-skills", cat:"game", tier:"B", tags:["UE5","C++"],
+   d:"Unreal Engine 5.x C++: correct UObject and garbage-collection handling, plus performance patterns.",
+   why:"Prevents common UPROPERTY and garbage-collection mistakes.", cmd:npx("sickn33/agentic-awesome-skills","unreal-engine-cpp-pro")},
+  {n:"godot-ui", by:"zate/cc-godot", cat:"game", tier:"B", tags:["Godot","HUD","menus"],
+   d:"Godot UI: Control nodes, themes, responsive layouts, menus and HUDs.",
+   why:"Godot's Control layout system is easy to get wrong.", cmd:npx("zate/cc-godot","godot-ui")},
+  {n:"game-design-theory", by:"pluginagentmarketplace/custom-plugin-game-developer", cat:"game", tier:"B", tags:["MDA","balance"],
+   d:"Design theory: the MDA framework, player psychology, balancing and progression curves.",
+   why:"For game design questions rather than code.", cmd:npx("pluginagentmarketplace/custom-plugin-game-developer","game-design-theory")},
+  {n:"game-assets", by:"PlayableIntelligence/game-creator", cat:"game", tier:"B", tags:["pixel art","sprites"],
+   d:"Pixel-art sprites and animated characters for browser games.",
+   why:"Placeholder art that's good enough for game jams.", cmd:npx("PlayableIntelligence/game-creator","game-assets")},
+
+  // ---- security
+  {n:"Trail of Bits Security", by:"trailofbits/skills", cat:"security", tier:"S", tags:["CodeQL","Semgrep","audit"],
+   d:"Static analysis with CodeQL and Semgrep, variant analysis and structured audit workflows from a leading security firm.",
+   why:"Security practice from professional auditors, available as skills.", cmd:npx("trailofbits/skills")},
+  {n:"/security-review", by:"built into Claude Code", cat:"security", tier:"A", tags:["bundled","diff"],
+   d:"A built-in security review of the pending changes on your branch.",
+   why:"Free, quick and already installed. Run it before you ship.", cmd:"/security-review"},
+
+  // ---- docs
+  {n:"Document skills (docx · pdf · pptx · xlsx)", by:"anthropics/skills", cat:"docs", tier:"A", tags:["official","Office"],
+   d:"Create, edit and extract Word, PDF, PowerPoint and Excel files, including formulas, tracked changes and form filling.",
+   why:"The skills behind Claude's built-in file creation.", cmd:"/plugin install document-skills@anthropic-agent-skills"},
+  {n:"doc-coauthoring", by:"anthropics/skills", cat:"docs", tier:"B", tags:["official","writing"],
+   d:"A structured workflow for writing specs, proposals and design docs together with Claude.",
+   why:"Good for RFCs and architecture decision records.", cmd:npx(AN,"doc-coauthoring")},
+
+  // ---- media
+  {n:"Remotion Best Practices", by:"remotion-dev/skills", cat:"media", tier:"A", tags:["video","React"],
+   d:"Programmatic video in React: animation, audio, captions and rendering with Remotion.",
+   why:"Lets you make product demos and trailers as code.", cmd:npx("https://github.com/remotion-dev/skills","remotion-best-practices")},
+  {n:"algorithmic-art", by:"anthropics/skills", cat:"media", tier:"B", tags:["official","p5.js","generative"],
+   d:"Generative art with p5.js: seeded randomness, flow fields and particle systems.",
+   why:"Useful for hero backgrounds and creative-coding experiments.", cmd:npx(AN,"algorithmic-art")},
+  {n:"slack-gif-creator", by:"anthropics/skills", cat:"media", tier:"B", tags:["official","GIF"],
+   d:"Animated GIFs sized and optimized for Slack's limits.",
+   why:"For quick team celebrations and reactions.", cmd:npx(AN,"slack-gif-creator")},
+];
+
+// ---------- illustrations ----------
+const rep = `repeatCount="indefinite"`;
+const svg = s => `<svg viewBox="0 0 320 130" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${s}</svg>`;
+const T = (x,y,t,c="tm",z=10,a="middle",w="") => `<text x="${x}" y="${y}" class="${c}" font-size="${z}" text-anchor="${a}"${w ? ` font-weight="${w}"` : ""}>${t}</text>`;
+const seq = (a,d=6) => `<animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;${a.toFixed(2)};${(a+.06).toFixed(2)};.92;1" dur="${d}s" ${rep}/>`;
+const R = (x,y,w,h,c,rx=3,ex="") => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" class="${c}"${ex}/>`;
+const G = (a,inner,d=6) => `<g opacity="0">${seq(a,d)}${inner}</g>`;
+const win = (x,y,w,h) => R(x,y,w,h,"fb sl",8) + `<line x1="${x}" y1="${y+15}" x2="${x+w}" y2="${y+15}" class="sl"/>` + [0,1,2].map(i => `<circle cx="${x+10+i*8}" cy="${y+7.5}" r="2.5" class="fm"/>`).join("");
+const bz = (t,a,b,c,d) => (1-t)**3*a + 3*(1-t)**2*t*b + 3*(1-t)*t*t*c + t**3*d;
+
+const ILL = {
+  pipeline(){
+    const xs = [40,100,160,220,280], lab = ["brainstorm","plan","tests first","build","review"], ic = ["💡","📋","🧪","🔨","🔍"];
+    return `<line x1="40" y1="56" x2="280" y2="56" class="sl" stroke-dasharray="4 4"/>
+      <line x1="40" y1="56" x2="40" y2="56" class="s1" stroke-width="3"><animate attributeName="x2" values="40;280;280" keyTimes="0;.8;1" dur="5s" ${rep}/></line>`
+      + xs.map((x,i) => `<circle cx="${x}" cy="56" r="17" class="fb sl"/><circle cx="${x}" cy="56" r="17" class="s1 nf" stroke-width="2.5" opacity="0">${seq(i*.2,5)}</circle>${T(x,61,ic[i],"ti",14)}${T(x,90,lab[i],"tm",9.5)}`).join("")
+      + T(160,118,"each phase is checked before the next one starts","f1",9.5,"middle","600");
+  },
+  diff(){
+    let s = R(24,12,272,106,"fb sl",8);
+    const w = [150,200,130,0,0,170,120];
+    for(let i = 0; i < 7; i++){
+      const y = 22 + i*13.5;
+      s += T(36,y+4.5,i+41,"tm",7.5);
+      if(i === 3) s += R(46,y-4,246,12,"fr",2,' opacity=".14"') + T(54,y+4,"−","fr",10,"middle","700") + R(62,y-1,120,5,"fr",2.5);
+      else if(i === 4) s += G(.2, R(46,y-4,246,12,"f3",2,' opacity=".16"') + T(54,y+4,"+","f3",10,"middle","700") + R(62,y-1,140,5,"f3",2.5));
+      else s += R(62,y-1,w[i],5,"fl",2.5);
+    }
+    return s + G(.35, R(190,96,98,16,"f3",8) + T(239,107,"+1 −1 · nothing else","tw",8,"middle","600"));
+  },
+  forge(){
+    let s = R(30,16,90,100,"fb sl",6) + R(30,16,90,20,"f1",6) + R(30,28,90,8,"f1",0) + T(75,31,"SKILL.md","tw",9,"middle","700");
+    [60,48,66,40,54].forEach((w,i) => s += R(40,46+i*12,w,5,"fl",2.5));
+    s += [[20,16],[124,26],[116,112]].map(([x,y],i) => `<text x="${x}" y="${y}" class="f1" font-size="12">✦<animate attributeName="opacity" values="0;1;0" dur="2s" begin="-${i*.6}s" ${rep}/></text>`).join("");
+    s += `<path d="M134,66 L166,66" class="s1 nf" stroke-width="2" stroke-dasharray="4 4"><animate attributeName="stroke-dashoffset" values="8;0" dur=".6s" ${rep}/></path><path d="M161,60 L169,66 L161,72" class="s1 nf" stroke-width="2"/>`;
+    [[184,14],[228,40],[272,66]].forEach(([x,y],i) => {
+      s += `<g opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.2;.85;1" dur="4s" begin="${i*.5}s" ${rep}/><animateTransform attributeName="transform" type="translate" values="-40 0;0 0;0 0" keyTimes="0;.25;1" dur="4s" begin="${i*.5}s" ${rep}/>${R(x,y,36,46,"fb sl",4)}${R(x,y,36,9,"f2",4)}${R(x+6,y+16,22,4,"fl",2)}${R(x+6,y+24,16,4,"fl",2)}${T(x+18,y+39,"✓","f3",11,"middle","700")}</g>`;
+    });
+    return s;
+  },
+  chat(){
+    const b = (x,y,w,txt,mine,a) => G(a, R(x,y,w,24,mine ? "fl" : "f2",12) + T(x+12,y+15.5,txt,mine ? "ti" : "tw",9,"start"), 7);
+    return b(12,8,214,"What if the token expires while offline?",0,.04)
+      + b(112,38,196,"Hmm… fall back to a cached license?",1,.2)
+      + b(12,68,214,"And if the cache is older than 30 days?",0,.36)
+      + G(.55, R(94,102,132,20,"f3",10) + T(160,115.5,"3 decisions captured ✓","tw",9,"middle","600"), 7);
+  },
+  handoff(){
+    let s = win(14,10,124,98) + T(76,124,"session 1 · context full","tm",8.5);
+    [90,70,100,60,84,96,50,80,66].forEach((w,i) => s += R(22,32+i*8,w,3.5,"fl",1.75));
+    s += win(182,10,124,98) + T(244,124,"session 2 · fresh start","tm",8.5);
+    s += G(.55, [70,90,56].map((w,i) => R(190,32+i*10,w,4,"f3",2)).join(""), 5);
+    s += `<g opacity="0"><animateTransform attributeName="transform" type="translate" values="58 46;220 52;220 52" keyTimes="0;.5;1" dur="5s" ${rep}/><animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;.1;.5;.6;1" dur="5s" ${rep}/>${R(0,0,40,48,"f1",5)}${T(20,22,"hand","tw",8,"middle","700")}${T(20,33,"off.md","tw",8,"middle","700")}</g>`;
+    return s;
+  },
+  compress(left = "4,000 lines of build log", right = "the 6 lines that matter"){
+    let s = "";
+    [120,96,128,84,110,124,70,104].forEach((w,i) => s += R(18,14+i*12,w,5,i === 2 || i === 5 ? "f1" : "fl",2.5));
+    s += `<polygon points="154,14 194,48 194,64 154,104" class="fl" opacity=".55"/>`;
+    s += [0,1,2].map(i => `<circle r="3" class="f1"><animateMotion dur="1.5s" begin="-${i*.5}s" ${rep} path="M150,${30+i*24} L196,56 L204,56"/></circle>`).join("");
+    s += [90,64,100].map((w,i) => `<rect x="206" y="${38+i*14}" height="6" rx="3" class="f3" width="0"><animate attributeName="width" values="0;${w};${w}" keyTimes="0;.4;1" dur="3s" begin="${i*.2}s" ${rep}/></rect>`).join("");
+    return s + T(80,122,left,"tm",9) + T(254,122,right,"f3",9,"middle","600");
+  },
+  review(flags = [1,4], label = "2 issues found"){
+    let s = R(20,10,280,110,"fb sl",8);
+    const a = [22,30,18,26,34,20,28], b = [120,90,150,70,110,130,80];
+    for(let i = 0; i < 7; i++){
+      const y = 22 + i*13.5;
+      s += T(32,y+4,i+118,"tm",7.5) + R(46,y-1,a[i],5,"f2",2.5,' opacity=".7"') + R(51+a[i],y-1,b[i],5,"fl",2.5);
+      if(flags.includes(i)) s += G(.2 + flags.indexOf(i)*.15, R(44,y-5,250,13,"f1",2,' opacity=".13"') + `<circle cx="282" cy="${y+1.5}" r="6" class="f1"/>` + T(282,y+5,"!","tw",9,"middle","700"), 5);
+    }
+    s += `<rect x="20" y="14" width="280" height="10" class="f2" opacity=".14"><animate attributeName="y" values="14;104;14" dur="5s" ${rep}/></rect>`;
+    return s + G(.55, R(194,98,98,16,"fi",8) + T(243,109,label,"tb",8.5,"middle","600"), 5);
+  },
+  plug(labels = ["API","DB","Docs","Tools"], center = "Claude"){
+    const pts = [[52,28],[52,98],[268,28],[268,98]];
+    let s = pts.map(([x,y]) => `<line x1="160" y1="63" x2="${x}" y2="${y}" class="sl" stroke-dasharray="3 3"/>`).join("");
+    s += pts.map(([x,y],i) => R(x-40,y-13,80,26,"fb sl",7) + T(x,y+3.5,labels[i],"ti",9,"middle","600")).join("");
+    s += pts.map(([x,y],i) => `<circle r="3.5" class="${i%2 ? "f3" : "f2"}"><animateMotion dur="2s" begin="-${i*.5}s" ${rep} path="M${x},${y} L160,63"/></circle>`).join("");
+    return s + `<circle cx="160" cy="63" r="24" class="f1"><animate attributeName="r" values="24;27;24" dur="2s" ${rep}/></circle>` + T(160,66.5,center,"tw",9.5,"middle","700");
+  },
+  search(){
+    const lab = ["#4790 crash on UNC paths","#4821 Windows path separator","#4902 docs typo"];
+    let s = "";
+    lab.forEach((l,i) => { const y = 12 + i*36; s += R(16,y,206,28,"fb sl",6) + `<circle cx="30" cy="${y+14}" r="5" class="${i === 1 ? "f3" : "fm"}"/>` + T(42,y+17.5,l,"ti",8.5,"start"); });
+    s += G(.4, R(16,48,206,28,"s1 nf",6,' stroke-width="2"'), 5);
+    s += `<g><animateTransform attributeName="transform" type="translate" values="40 22;170 58;170 58;40 22" keyTimes="0;.35;.8;1" dur="5s" ${rep}/><circle cx="0" cy="0" r="12" class="s2 nf" stroke-width="3"/><line x1="9" y1="9" x2="18" y2="18" class="s2" stroke-width="4" stroke-linecap="round"/></g>`;
+    return s + G(.45, T(272,52,"Fixed in","tm",9) + T(272,70,"v2.3.1","f3",14,"middle","700") + T(272,86,"from the issue","tm",8), 5);
+  },
+  ui(){
+    let s = win(26,8,268,114);
+    s += R(40,30,28,5,"fi",2.5) + R(196,30,20,4,"fl",2) + R(222,30,20,4,"fl",2) + R(250,28,30,9,"f1",4.5);
+    s += G(.04, R(40,48,140,11,"fi",3)) + G(.12, R(40,63,96,11,"f1",3)) + G(.2, R(40,82,120,4,"fl",2) + R(40,90,100,4,"fl",2))
+       + G(.28, R(40,100,52,14,"f1",7) + R(98,100,52,14,"fb sl",7));
+    return s + G(.36, R(196,46,84,66,"f2",8,' opacity=".85"') + `<circle cx="226" cy="74" r="14" class="f3"/>` + R(236,84,34,20,"f1",4,' opacity=".9"'));
+  },
+  variants(){
+    let s = "";
+    const pos = [[20,8],[166,8],[20,68],[166,68]], acc = ["f1","f2","f3","fi"];
+    pos.forEach(([x,y],i) => {
+      s += G(.05 + i*.1, R(x,y,134,54,"fb sl",6) + R(x+8,y+10,[60,40,70,50][i],7,acc[i],2) + R(x+8,y+22,70,3.5,"fl",1.75) + R(x+8,y+29,54,3.5,"fl",1.75) + R(x+8,y+38,30,9,acc[i],4.5)
+        + (i%2 ? `<circle cx="${x+104}" cy="${y+27}" r="16" class="${acc[(i+1)%4]}" opacity=".8"/>` : R(x+86,y+10,40,36,acc[(i+2)%4],5,' opacity=".75"')));
+    });
+    return s + G(.5, R(164,6,138,58,"s1 nf",8,' stroke-width="2.5"') + R(258,0,48,14,"f1",7) + T(282,10,"pick ✓","tw",8,"middle","700"));
+  },
+  dashboard(){
+    let s = win(16,8,288,114) + R(17,24,52,97,"fl",0,' opacity=".45"');
+    [30,22,34,26].forEach((w,i) => s += R(26,34+i*14,w,5,i === 0 ? "f1" : "fm",2.5,i ? ' opacity=".5"' : ""));
+    [0,1,2].forEach(i => s += G(.05 + i*.1, R(80+i*72,32,64,26,"fb sl",6) + R(88+i*72,38,22,4,"fl",2) + R(88+i*72,46,34,7,["f1","f2","f3"][i],2)));
+    return s + `<path d="M84,110 L112,98 L140,102 L168,86 L196,90 L224,74 L252,78 L292,64" class="s1 nf" stroke-width="2.5" stroke-linejoin="round" stroke-dasharray="260"><animate attributeName="stroke-dashoffset" values="260;0;0" keyTimes="0;.5;1" dur="5s" ${rep}/></path>`;
+  },
+  perf(){
+    const L = ["LCP","bundle","re-renders","waterfall"], hb = [78,68,60,74], ha = [30,26,16,22];
+    let s = `<line x1="30" y1="108" x2="298" y2="108" class="sl"/>`;
+    L.forEach((l,i) => {
+      const x = 46 + i*66;
+      s += R(x,108-hb[i],22,hb[i],"fl",3) + `<rect x="${x+26}" width="22" rx="3" class="f3" y="${108-hb[i]}" height="${hb[i]}"><animate attributeName="height" values="${hb[i]};${ha[i]};${ha[i]}" keyTimes="0;.45;1" dur="4s" ${rep}/><animate attributeName="y" values="${108-hb[i]};${108-ha[i]};${108-ha[i]}" keyTimes="0;.45;1" dur="4s" ${rep}/></rect>` + T(x+24,121,l,"tm",8.5);
+    });
+    return s + R(214,10,8,8,"fl",2) + T(226,17,"before","tm",8,"start") + R(262,10,8,8,"f3",2) + T(274,17,"after","tm",8,"start");
+  },
+  audit(items, warn = 2, score = "3/4"){
+    let s = "";
+    items.forEach((t,i) => { const y = 14 + i*26; s += R(20,y,176,20,"fb sl",6) + T(32,y+14,t,"ti",9,"start") + G(.08 + i*.14, T(182,y+14.5,i === warn ? "⚠" : "✓",i === warn ? "f1" : "f3",12,"middle","700")); });
+    s += `<circle cx="256" cy="60" r="32" class="sl nf" stroke-width="7"/><circle cx="256" cy="60" r="32" class="s3 nf" stroke-width="7" stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="201" transform="rotate(-90 256 60)"><animate attributeName="stroke-dashoffset" values="201;50;50" keyTimes="0;.6;1" dur="6s" ${rep}/></circle>`;
+    return s + T(256,64,score,"ti",13,"middle","700") + T(256,114,"1 fix suggested","f1",9,"middle","600");
+  },
+  browsertest(){
+    let s = win(16,8,186,114);
+    s += T(30,37,"Email","tm",7.5,"start") + R(30,41,150,14,"fb sl",4) + T(30,68,"Password","tm",7.5,"start") + R(30,72,150,14,"fb sl",4);
+    s += G(.15, R(36,46,72,4,"fm",2), 5) + G(.28, T(36,83,"••••••••","ti",9,"start"), 5);
+    s += R(30,94,64,18,"f1",9) + T(62,106.5,"Sign up","tw",8.5,"middle","600");
+    s += `<circle cx="62" cy="103" r="0" class="f1" opacity=".3"><animate attributeName="r" values="0;0;16;0;0" keyTimes="0;.42;.5;.56;1" dur="5s" ${rep}/></circle>`;
+    s += `<path d="M0,0 L0,14 L4,10 L7,16 L9,15 L6,9 L11,9 Z" class="fi" stroke="#fff" stroke-width="1"><animateTransform attributeName="transform" type="translate" values="170 30;110 50;64 102;64 102;170 30" keyTimes="0;.2;.42;.85;1" dur="5s" ${rep}/></path>`;
+    s += R(212,8,94,114,"fb sl",8) + T(222,24,"browser log","tm",8,"start","600");
+    return s + ["load /signup","fill form","click submit","0 console errors"].map((t,i) => G(.15 + i*.12, T(220,44+i*18,"✓ "+t,"f3",8,"start","600"), 5)).join("");
+  },
+  palette(){
+    let s = ["f1","f2","f3","fi","fm"].map((k,i) => `<circle cx="${40+i*46}" cy="40" r="0" class="${k}"><animate attributeName="r" values="0;18;18;0" keyTimes="0;.12;.9;1" dur="5s" begin="${i*.15}s" ${rep}/></circle>`).join("");
+    s += `<text x="26" y="110" class="ti" font-size="36" style="font-family:Fraunces,serif;font-weight:700">Aa</text><text x="92" y="110" class="tm" font-size="36" style="font-weight:400">Aa</text>`;
+    s += T(48,124,"display","tm",7.5) + T(114,124,"body","tm",7.5);
+    return s + G(.4, R(180,72,116,48,"fb sl",6) + R(180,72,116,13,"f2",6) + R(180,79,116,6,"f2",0) + R(190,93,60,5,"f1",2.5) + R(190,103,90,4,"fl",2) + R(190,111,70,4,"fl",2), 5);
+  },
+  poster(title = ""){
+    let s = R(70,4,180,122,"fi",4), g = "";
+    for(let i = 0; i < 26; i++){
+      const a = i*.75, d = 6 + i*1.8;
+      g += `<circle cx="${(160+Math.cos(a)*d).toFixed(1)}" cy="${(62+Math.sin(a)*d).toFixed(1)}" r="${(2+(i%5)*1.5).toFixed(1)}" class="${["f1","f2","f3"][i%3]}" opacity=".9"/>`;
+    }
+    s += `<g>${g}<animateTransform attributeName="transform" type="rotate" values="0 160 62;360 160 62" dur="40s" ${rep}/></g>`;
+    return s + (title ? T(160,120,title,"tb",8,"middle","700") : "");
+  },
+  game(label = "Godot 4"){
+    let s = R(0,104,320,26,"f3",0,' opacity=".3"') + R(0,104,320,3,"f3",0);
+    s += `<ellipse cx="70" cy="28" rx="22" ry="7" class="fl"/><ellipse cx="250" cy="40" rx="28" ry="8" class="fl"/>`;
+    s += R(150,74,70,8,"f2",3) + R(96,40,16,16,"f1",3) + T(104,52,"?","tw",10,"middle","700");
+    s += [[185,62],[262,90]].map(([x,y],i) => `<ellipse cx="${x}" cy="${y}" rx="5" ry="6" class="f1"><animate attributeName="rx" values="5;1;5" dur="1.2s" begin="-${i*.3}s" ${rep}/></ellipse>`).join("");
+    s += `<g><animateMotion dur="5s" ${rep} path="M20,86 L70,86 Q100,10 150,56 L206,56 Q236,20 266,86 L300,86"/>${R(0,0,14,18,"fi",3)}${R(8,4,3,4,"tb",1)}</g>`;
+    return s + T(12,18,label,"tm",9,"start","600") + T(308,18,"★ 120","f1",9,"end","700");
+  },
+  net(){
+    let s = R(122,8,76,34,"f2",8) + T(160,23,"server","tw",9,"middle","700") + T(160,34,"authoritative","tw",7);
+    [[50,100],[160,106],[270,100]].forEach(([x,y],i) => {
+      s += `<line x1="160" y1="42" x2="${x}" y2="${y-14}" class="sl" stroke-dasharray="3 3"/><circle cx="${x}" cy="${y}" r="14" class="fb sl"/>` + T(x,y+5,["🧙","🤖","🦊"][i],"ti",13)
+        + `<circle r="3.5" class="f1"><animateMotion dur="1.6s" begin="-${i*.5}s" ${rep} path="M${x},${y-14} L160,42"/></circle><circle r="3.5" class="f3"><animateMotion dur="1.6s" begin="-${(i*.5+.8).toFixed(1)}s" ${rep} path="M160,42 L${x},${y-14}"/></circle>`;
+    });
+    return s + T(14,20,"inputs ↑","f1",8.5,"start","600") + T(306,20,"state ↓","f3",8.5,"end","600");
+  },
+  juice(){
+    const kt = `keyTimes="0;.45;.5;.58;1" dur="1.4s" ${rep}`;
+    return T(16,24,"screen shake","tm",9,"start") + T(16,38,"hit-stop","tm",9,"start") + T(16,52,"squash & stretch","f1",9,"start","600")
+      + `<g><animateTransform attributeName="transform" type="translate" values="0 0;0 0;3 -2;-3 2;2 0;0 0;0 0" keyTimes="0;.48;.52;.56;.6;.64;1" dur="1.4s" ${rep}/>
+        <line x1="60" y1="110" x2="280" y2="110" class="sm" stroke-width="2"/>
+        <g><animateTransform attributeName="transform" type="translate" values="180 28;180 96;180 28" keyTimes="0;.5;1" calcMode="spline" keySplines=".5 0 1 1;0 0 .5 1" dur="1.4s" ${rep}/>
+          <ellipse cx="0" cy="0" rx="14" ry="14" class="f1"><animate attributeName="rx" values="12;14;20;14;12" ${kt}/><animate attributeName="ry" values="16;14;8;14;16" ${kt}/><animate attributeName="cy" values="0;0;6;0;0" ${kt}/></ellipse>
+        </g>
+        <g opacity="0"><animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;.48;.52;.64;1" dur="1.4s" ${rep}/>
+          ${[[-34,-6,-20,-2],[-26,-22,-16,-10],[26,-22,16,-10],[34,-6,20,-2]].map(([a,b,c,d]) => `<line x1="${180+c}" y1="${110+d}" x2="${180+a}" y2="${110+b}" class="s1" stroke-width="3" stroke-linecap="round"/>`).join("")}
+        </g></g>`;
+  },
+  hud(){
+    let s = R(16,8,288,114,"fi",10) + R(16,8,288,114,"f2",10,' opacity=".25"');
+    s += T(28,26,"HP","tw",8,"start","700") + R(46,19,100,8,"tw",4,' opacity=".25"') + `<rect x="46" y="19" height="8" rx="4" class="f1" width="100"><animate attributeName="width" values="100;34;34;100" keyTimes="0;.3;.7;1" dur="4s" ${rep}/></rect>`;
+    s += T(292,27,"12 / 30","tw",10,"end","700");
+    s += `<rect x="244" y="82" width="48" height="30" rx="4" class="s3 nf" stroke-width="1.5"/><circle r="2.5" class="f3"><animateMotion dur="4s" ${rep} path="M254,90 L282,94 L270,106 Z"/></circle>`;
+    return s + G(.35, R(118,40,84,66,"fb",8,' opacity=".96"') + T(160,56,"PAUSED","ti",9,"middle","700") + R(132,64,56,12,"f1",6) + R(132,82,56,12,"fl",6));
+  },
+  curve(){
+    let s = `<line x1="36" y1="110" x2="300" y2="110" class="sm"/><line x1="36" y1="10" x2="36" y2="110" class="sm"/>` + T(298,123,"level →","tm",8.5,"end") + T(32,16,"XP","tm",8.5,"end");
+    s += `<path d="M36,98 C120,88 210,56 296,6 L296,30 C210,80 120,106 36,110 Z" class="f3" opacity=".14"/>` + T(250,62,"flow channel","f3",8.5,"middle","600");
+    s += `<path d="M36,106 C120,100 210,72 296,16" class="s1 nf" stroke-width="2.5" stroke-dasharray="320" stroke-dashoffset="320"><animate attributeName="stroke-dashoffset" values="320;0;0" keyTimes="0;.5;1" dur="5s" ${rep}/></path>`;
+    [.25,.5,.75,1].forEach(t => { const x = bz(t,36,120,210,296), y = bz(t,106,100,72,16); s += G(t*.48, `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4.5" class="f2"/>` + (t === .75 ? T(x-6,y-10,"boss","f1",8.5,"end","700") : ""), 5); });
+    return s;
+  },
+  sprites(){
+    const P = ["..aaaa..",".abbbba.",".abddba.",".abbbba.","..cccc..",".cccccc.","a.cccc.a","..c..c..","..a..a..",".aa..aa."];
+    const legs = [null,["...cc...","...aa...","..aa...."],null,["..c..c..",".a....a.","aa....aa"]];
+    const cls = {a:"fi",b:"f1",c:"f2",d:"fm"};
+    let s = R(36,14,78,96,"fb sl",4), k = 0;
+    P.forEach((row,y) => [...row].forEach((ch,x) => { if(ch !== "."){ s += `<rect x="${40+x*9}" y="${18+y*9}" width="8.4" height="8.4" class="${cls[ch]}" opacity="0">${seq(.01+k*.012)}</rect>`; k++; } }));
+    legs.forEach((lg,f) => {
+      const rows = lg ? [...P.slice(0,7),...lg] : P, ox = 152 + f*38;
+      s += R(ox-3,36,35,46,"fb sl",3);
+      rows.forEach((row,y) => [...row].forEach((ch,x) => { if(ch !== ".") s += `<rect x="${ox+x*3.6}" y="${40+y*3.6}" width="3.4" height="3.4" class="${cls[ch]}"/>`; }));
+    });
+    s += `<rect y="33" width="41" height="52" rx="4" class="s1 nf" stroke-width="2" x="146"><animate attributeName="x" values="146;184;222;260" calcMode="discrete" dur="1.2s" ${rep}/></rect>`;
+    return s + T(226,102,"walk cycle · 4 frames","tm",8.5);
+  },
+  shield(label = "CodeQL · Semgrep · variant analysis"){
+    let s = [0,1].map(i => `<circle cx="160" cy="62" r="30" class="s1 nf" stroke-width="2"><animate attributeName="r" values="30;64" dur="2.4s" begin="-${i*1.2}s" ${rep}/><animate attributeName="opacity" values=".7;0" dur="2.4s" begin="-${i*1.2}s" ${rep}/></circle>`).join("");
+    s += `<path d="M160,18 L196,30 L196,60 Q196,92 160,108 Q124,92 124,60 L124,30 Z" class="f2"/>` + T(160,72,"✓","tw",28,"middle","700");
+    s += [[50,36],[268,44],[62,98],[262,100]].map(([x,y],i) => T(x,y,"🐞","ti",14) + G(.2 + i*.15, `<line x1="${x-11}" y1="${y-15}" x2="${x+11}" y2="${y+5}" class="sr" stroke-width="2.5" stroke-linecap="round"/>`, 5)).join("");
+    return s + T(160,124,label,"tm",8.5);
+  },
+  docs(labels = ["DOCX","PDF","PPTX","XLSX"], caption = "real files: formulas, styles, layout"){
+    const cls = ["f2","fr","f1","f3"];
+    return labels.map((l,i) => {
+      const x = 34 + i*70;
+      return `<g><animateTransform attributeName="transform" type="translate" values="0 0;0 -6;0 0" dur="2.4s" begin="-${i*.4}s" ${rep}/>${R(x,22,50,68,"fb sl",5)}${[30,24,34,20].map((w,j) => R(x+8,32+j*8,w,4,"fl",2)).join("")}${R(x,72,50,18,cls[i],4)}${T(x+25,84.5,l,"tw",8.5,"middle","700")}</g>`;
+    }).join("") + T(160,116,caption,"tm",9);
+  },
+  video(){
+    let s = R(16,8,150,78,"fi",8);
+    s += `<circle cx="58" cy="46" r="0" class="f1"><animate attributeName="r" values="0;22;22;0" keyTimes="0;.2;.8;1" dur="5s" ${rep}/></circle>`;
+    s += G(.25, T(116,44,"Ship","tw",14,"middle","700") + T(116,60,"it.","f1",14,"middle","700"), 5);
+    s += G(.4, R(40,70,102,10,"tw",5,' opacity=".2"') + T(91,78,"captions on","tw",7), 5);
+    s += T(180,26,"▶ 00:12 / 00:30","ti",9,"start","600") + T(180,44,"1920×1080 · 30fps","tm",8,"start") + T(180,62,"render → MP4","f3",8.5,"start","600");
+    [[[16,90,"f1"],[112,120,"f1"]],[[16,190,"f2"]],[[60,64,"f3"],[150,150,"f3"]]].forEach((tr,j) => tr.forEach(([x,w,c]) => s += R(x,94+j*10,w,7,c,2,' opacity=".85"')));
+    return s + `<line x1="16" y1="90" x2="16" y2="126" class="si" stroke-width="2"><animate attributeName="x1" values="16;302" dur="5s" ${rep}/><animate attributeName="x2" values="16;302" dur="5s" ${rep}/></line>`;
+  },
+  gif(){
+    let s = R(20,14,280,86,"fi",8);
+    for(let i = 0; i < 9; i++) s += R(30+i*30,18,14,6,"tb",2,' opacity=".6"') + R(30+i*30,90,14,6,"tb",2,' opacity=".6"');
+    ["🎉","🚀","✨"].forEach((e,i) => { const x = 40 + i*84; s += R(x,28,72,58,"fb",4) + `<text x="${x+36}" y="68" font-size="26" text-anchor="middle">${e}<animateTransform attributeName="transform" type="translate" values="0 0;0 -8;0 0" dur=".9s" begin="-${i*.3}s" ${rep}/></text>`; });
+    s += `<rect y="26" width="76" height="62" rx="5" class="s1 nf" stroke-width="2.5" x="38"><animate attributeName="x" values="38;122;206" calcMode="discrete" dur="1.5s" ${rep}/></rect>`;
+    return s + T(160,118,"loops forever · sized for Slack","tm",9);
+  },
+  beforeafter(){
+    const id = "baG" + (++gid);
+    let s = `<defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c3aed"/><stop offset="1" stop-color="#2563eb"/></linearGradient></defs>`;
+    s += `<rect x="12" y="10" width="132" height="98" rx="8" fill="url(#${id})"/><rect x="44" y="26" width="68" height="7" rx="3.5" fill="#fff"/><rect x="54" y="38" width="48" height="4" rx="2" fill="#fff" opacity=".7"/>`;
+    s += [0,1,2].map(i => `<rect x="${22+i*38}" y="56" width="32" height="40" rx="6" fill="#fff" opacity=".25"/><text x="${38+i*38}" y="80" font-size="12" text-anchor="middle">${["🚀","⚡","✨"][i]}</text>`).join("");
+    s += [[44,22],[134,58],[24,100]].map(([x,y],i) => G(.1+i*.08, `<circle cx="${x}" cy="${y}" r="7" class="fr"/>` + T(x,y+3.5,"!","tw",9,"middle","700"))).join("");
+    s += T(78,123,"AI default","tm",8.5,"middle","600") + `<path d="M150,59 L168,59 M162,53 L168,59 L162,65" class="s1 nf" stroke-width="2.2" stroke-linecap="round"/>`;
+    s += R(176,10,132,98,"fb sl",8) + G(.3, R(186,24,64,9,"fi",1) + R(186,37,48,9,"fi",1)) + G(.38, R(186,53,40,3,"f1",1.5) + R(186,62,56,3,"fl",1.5) + R(186,68,46,3,"fl",1.5)) + G(.46, R(186,82,34,12,"fi",2)) + G(.54, R(258,20,40,78,"f3",0));
+    return s + T(242,123,"after the audit","f3",8.5,"middle","700");
+  },
+  viewports(){
+    let s = "";
+    [[20,30,44,78,"375"],[80,20,76,96,"768"],[172,12,132,100,"1440"]].forEach(([x,y,w,h,l],i) => {
+      const a = .1 + i*.2;
+      s += R(x,y,w,h,"fb sl",5) + R(x+5,y+7,w*.5,4,"fi",2) + R(x+5,y+15,w*.72,3,"fl",1.5) + R(x+5,y+21,w*.6,3,"fl",1.5) + R(x+5,y+29,w-10,h*.38,"f3",2,' opacity=".7"') + R(x+5,y+33+h*.38,w*.4,7,"f1",2);
+      s += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="5" fill="#fff" opacity="0"><animate attributeName="opacity" values="0;0;.9;0;0" keyTimes="0;${a.toFixed(2)};${(a+.03).toFixed(2)};${(a+.1).toFixed(2)};1" dur="5s" ${rep}/></rect>`;
+      s += G(a+.08, `<circle cx="${x+w-4}" cy="${y+4}" r="7" class="f3"/>` + T(x+w-4,y+7.5,"✓","tw",9,"middle","700"), 5) + T(x+w/2,y+h+11,l+" px","tm",8);
+    });
+    return s;
+  },
+  designmd(){
+    let s = R(14,10,100,110,"fb sl",6) + T(24,26,"DESIGN.md","ti",9,"start","700");
+    ["## Color","## Type","## Space","## Voice"].forEach((h,i) => { const y = 44 + i*20; s += T(24,y,h,"f1",7.5,"start","600") + R(24,y+5,[70,58,64,50][i],3,"fl",1.5); });
+    s += `<path d="M118,64 L140,64" class="s1 nf" stroke-width="2" stroke-dasharray="4 4"><animate attributeName="stroke-dashoffset" values="8;0" dur=".6s" ${rep}/></path>`;
+    s += G(.1, ["f1","f2","f3","fi"].map((c,i) => `<circle cx="${156+i*18}" cy="24" r="7" class="${c}"/>`).join("")) + G(.1, T(300,27,"tokens","tm",8,"end"));
+    s += G(.22, `<text x="148" y="66" font-size="22" class="ti" style="font-family:Fraunces,serif;font-weight:700">Aa</text><text x="180" y="66" font-size="15" class="tm" style="font-family:Inter,sans-serif">Aa</text>`);
+    s += G(.34, R(220,50,16,16,"fl",2) + R(242,50,16,16,"fl",6) + `<circle cx="272" cy="58" r="8" class="fl"/>`);
+    return s + G(.48, R(148,80,158,42,"fb sl",6) + R(156,88,62,6,"fi",1) + R(156,98,46,3,"fl",1.5) + R(156,106,30,9,"f1",2) + R(252,86,46,30,"f3",0));
+  },
+  figma(){
+    let s = R(12,10,152,110,"fb sl",6);
+    s += `<rect x="24" y="30" width="88" height="50" class="s2 nf" stroke-width="1.5"/>` + T(24,25,"Hero","f2",7.5,"start","700") + R(30,38,44,6,"fi",1) + R(30,48,30,3,"fl",1.5) + R(30,60,24,8,"f1",2) + R(78,36,28,38,"f3",0);
+    s += `<rect x="120" y="30" width="34" height="50" class="sm nf" stroke-width="1"/>` + T(120,25,"Card","tm",7.5,"start","600") + R(125,36,24,16,"fl",2) + R(125,57,20,3,"fl",1.5);
+    s += `<rect x="24" y="94" width="130" height="16" class="sm nf" stroke-width="1"/>` + T(24,90,"Footer","tm",7.5,"start","600");
+    s += G(.05, [[24,30],[112,30],[24,80],[112,80]].map(([x,y]) => R(x-2.5,y-2.5,5,5,"fb",0,' style="stroke:var(--accent2);stroke-width:1.5"')).join(""));
+    s += `<circle r="3.5" class="f2"><animateMotion dur="1s" ${rep} path="M166,64 L184,64"/></circle>`;
+    s += R(186,10,122,110,"fi",6) + T(196,26,"</>","f3",9,"start","700");
+    const cl = [["f1",40],["f3",60],["f2",34],["tb",70],["f1",50],["f3",44],["tb",62]];
+    return s + cl.map(([c,w],i) => G(.12 + i*.07, R(196 + (i%3 ? 8 : 0),36+i*11,w,4,c,2))).join("");
+  },
+  components(){
+    const tiles = ["Button","Card","Input","Toggle","Avatar","Badge"];
+    return tiles.map((t,i) => {
+      const x = 16 + (i%3)*100, y = 10 + Math.floor(i/3)*58, a = .04 + i*.08;
+      let c = "";
+      if(t === "Button") c = R(x+18,y+11,52,16,"f1",4) + T(x+44,y+22.5,"Save","tw",8,"middle","700");
+      if(t === "Card") c = R(x+10,y+7,68,22,"f3",3,' opacity=".75"') + R(x+10,y+32,40,3,"fl",1.5);
+      if(t === "Input") c = R(x+10,y+11,68,16,"fb sl",3) + `<line x1="${x+16}" y1="${y+14}" x2="${x+16}" y2="${y+24}" class="si" stroke-width="1.2"><animate attributeName="opacity" values="1;0;1" dur="1s" ${rep}/></line>`;
+      if(t === "Toggle") c = R(x+30,y+11,28,16,"f3",8) + `<circle cx="${x+50}" cy="${y+19}" r="5.5" class="tw"/>`;
+      if(t === "Avatar") c = ["f1","f2","f3"].map((k,j) => `<circle cx="${x+30+j*14}" cy="${y+19}" r="9" class="${k}" style="stroke:var(--bg2)" stroke-width="2"/>`).join("");
+      if(t === "Badge") c = R(x+14,y+13,26,11,"f2",5.5) + R(x+44,y+13,30,11,"f3",5.5);
+      return `<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;${a.toFixed(2)};${(a+.06).toFixed(2)};.92;1" dur="6s" ${rep}/><animateTransform attributeName="transform" type="translate" values="0 -12;0 -12;0 0;0 0" keyTimes="0;${a.toFixed(2)};${(a+.08).toFixed(2)};1" dur="6s" ${rep}/>${R(x,y,88,48,"fb sl",8)}${c}${T(x+44,y+43,t,"tm",7.5)}</g>`;
+    }).join("");
+  },
+  extract(){
+    let s = win(12,10,144,110) + R(22,34,62,8,"fi",1) + R(22,46,44,3,"fl",1.5) + R(22,52,50,3,"fl",1.5) + R(22,62,30,9,"f2",2) + R(98,32,50,44,"f1",0,' opacity=".85"') + R(22,84,40,28,"fl",4) + R(66,84,40,28,"fl",4) + R(110,84,38,28,"fl",4);
+    s += `<rect y="26" width="3" height="94" class="f1" opacity=".55"><animate attributeName="x" values="14;152;14" dur="3s" ${rep}/></rect>`;
+    s += `<path d="M160,64 L178,64" class="s1 nf" stroke-width="2" stroke-dasharray="4 4"><animate attributeName="stroke-dashoffset" values="8;0" dur=".6s" ${rep}/></path>`;
+    s += R(182,10,126,110,"fb sl",6) + R(182,10,126,18,"f1",6) + R(182,20,126,8,"f1",0) + T(245,23,"site-style / SKILL.md","tw",8,"middle","700");
+    return s + [["f2","colors × 6"],["fi","type × 3"],["f3","radius 6 / 10"],["f1","spacing 4-pt"]].map(([c,l],i) => G(.15 + i*.12, R(192,38+i*19,12,12,c,3) + T(210,47+i*19,l,"ti",8.5,"start"), 5)).join("");
+  },
+  typepair(){
+    return `<text x="18" y="72" font-size="56" class="ti" style="font-family:Fraunces,serif;font-weight:700">Aa</text>`
+      + G(.12, `<text x="118" y="72" font-size="42" class="ti" style="font-family:Inter,sans-serif;font-weight:400">Aa</text>`)
+      + G(.24, `<text x="214" y="72" font-size="28" class="f1" style="font-family:'JetBrains Mono',monospace">Aa</text>`)
+      + T(52,96,"Display · Fraunces","tm",8) + T(150,96,"Body · Inter","tm",8) + T(242,96,"Label · Mono","tm",8)
+      + T(160,120,"a deliberate pairing, not Inter everywhere","f1",8.5,"middle","600");
+  },
+};
+let gid = 0;
+
+// what you can do with each skill: illustration + example prompt + outcome
+const USE = {
+  "Superpowers": {ill:"pipeline", t:"Add offline sync to the app. Use superpowers.", g:"A written plan, failing tests first, an implementation built by subagents, then a final review."},
+  "Andrej Karpathy Guidelines": {ill:"diff", t:"Fix the null-reference in ExportService.", g:"A three-line fix with no surprise renames or reformatting, and its assumptions stated up front."},
+  "skill-creator": {ill:"forge", t:"Turn our MR checklist into a skill.", g:"A tested SKILL.md that Claude applies automatically to every future MR."},
+  "Grill Me": {ill:"chat", t:"Grill me on this plan for license activation.", g:"The edge cases and decisions you haven't made yet, before any code is written."},
+  "Handoff": {ill:"handoff", t:"/handoff, I'm running out of context.", g:"A handoff file with goals, decisions and open threads that a fresh session can pick up immediately."},
+  "Context Mode": {ill:"compress", t:"Run the full build and fix the errors.", g:"Only the relevant error lines enter context, not thousands of lines of log."},
+  "Caveman": {ill:"compress", args:["verbose, padded answer","same facts, fewer tokens"], t:"Explain why this test is flaky.", g:"The same answer in far fewer words and tokens."},
+  "/code-review · /simplify": {ill:"review", t:"/code-review high", g:"Verified bugs in your diff, ranked, each with file:line and a failure scenario."},
+  "mcp-builder": {ill:"plug", args:[["Tickets","Projects","Users","Files"],"MCP"], t:"Build an MCP server for our PlanRadar API.", g:"A typed MCP server that lets Claude query tickets and projects directly."},
+  "claude-api": {ill:"plug", args:[["Streaming","Tool use","Caching","Batches"],"SDK"], t:"Add a Claude-powered summary to this app.", g:"Current SDK code with the right model IDs, caching and streaming."},
+  "Context7": {ill:"plug", args:[["Exact docs","API refs","Examples","Changelog"],"Claude"], t:"Configure Tailwind v4. Use context7.", g:"Answers based on the docs for the exact version you use."},
+  "Firecrawl Developer Index": {ill:"search", t:"Why does this library throw on Windows paths?", g:"The relevant GitHub issue and the version that fixed it, with a citation."},
+  "Composition Patterns": {ill:"diff", t:"Clean up this <Modal> with 9 boolean props.", g:"A compound Modal.Header, Body and Footer API that's easier to extend."},
+  "frontend-design": {ill:"ui", t:"Build a landing page for my plugin.", g:"A page with a distinct visual identity instead of the default purple-gradient look."},
+  "Vercel React Best Practices": {ill:"perf", t:"Why is this dashboard slow?", g:"Fixes for waterfalls, bundle size and re-renders, in order of impact."},
+  "Web Design Guidelines": {ill:"audit", args:[["Focus states visible","Images have alt text","Contrast ≥ 4.5:1","Touch targets ≥ 44px"]], t:"Audit the checkout page.", g:"A list of accessibility, UX and performance violations, each with a fix."},
+  "web-artifacts-builder": {ill:"dashboard", t:"Make a single-file internal tool for tracking releases.", g:"A bundled React and shadcn app in one HTML file you can share."},
+  "webapp-testing": {ill:"browsertest", t:"Test the signup flow and screenshot each step.", g:"Runs in a real browser, with screenshots and console errors as evidence that it works."},
+  "Playwright MCP": {ill:"browsertest", t:"Open localhost:3000 and find out why the button does nothing.", g:"Claude clicks through the running app and reports what actually happens."},
+  "Impeccable": {ill:"ui", t:"/impeccable critique, then /polish", g:"A ranked list of what makes the page look AI-made, followed by targeted fixes to type, layout and color."},
+  "avoid-ai-design": {ill:"beforeafter", t:"Audit the landing page for AI tells and fix them.", g:"Tells listed by severity (purple gradient, Inter only, centered hero over three cards…) and the rewritten code."},
+  "Design Review agent": {ill:"viewports", t:"Use the design-reviewer agent on the pricing page.", g:"Screenshots at 375, 768 and 1440 px, with Blockers, High and Polish issues and the exact fix for each."},
+  "DESIGN.md + awesome-design-md": {ill:"designmd", t:"Read DESIGN.md and build the features section.", g:"UI that uses only your tokens, type scale and voice, so it stays consistent from page to page."},
+  "Figma MCP": {ill:"figma", t:"Implement this Figma frame: <link>", g:"Code that matches the real design's spacing, variables and components."},
+  "21st.dev Magic MCP": {ill:"components", t:"/ui a pricing section with a monthly/yearly toggle", g:"A component based on community-built designs instead of generic markup."},
+  "shadcn MCP": {ill:"components", t:"Add a command palette and a data table from the shadcn registry.", g:"Accessible components, installed. Then restyle them to match DESIGN.md."},
+  "Google Stitch": {ill:"variants", t:"(in Stitch) Explore 4 layouts for a construction-app landing page.", g:"Visual options to choose from, plus a DESIGN.md exported for Claude Code."},
+  "Skill UI": {ill:"extract", t:"Extract the design system of a site I admire.", g:"A reusable skill with its tokens and patterns, to use as a reference."},
+  "Google Fonts": {ill:"typepair", t:"Pick a display and body font pairing for a calm engineering brand.", g:"A deliberate type pairing and scale, written into DESIGN.md."},
+  "Design Anti-Slop": {ill:"review", args:[[0,3,5],"3 AI tells found"], t:"Scan this project for low-effort AI patterns.", g:"Flags for mesh gradients, floating 3D shapes and Inter defaults."},
+  "Taste Skill": {ill:"variants", t:"Redesign the settings screen: high taste, low density.", g:"Restrained, polished defaults that you tune with three settings."},
+  "design plugin (critique · handoff · a11y)": {ill:"audit", args:[["Visual hierarchy","Consistency","Spacing rhythm","Contrast & a11y"]], t:"/design:design-critique on this screenshot", g:"Structured feedback on hierarchy, usability and consistency, plus handoff specs."},
+  "UI/UX Pro Max": {ill:"palette", t:"Suggest 3 palette and font pairings for a fintech app.", g:"Style options drawn from a searchable design database."},
+  "Superdesign": {ill:"variants", t:"Explore 4 directions for the onboarding screen.", g:"Variations side by side on a canvas, then React and Tailwind code for the one you pick."},
+  "theme-factory": {ill:"palette", t:"Apply one consistent theme to this report and deck.", g:"Matching colors and fonts across every output."},
+  "brand-guidelines": {ill:"palette", t:"Make every output follow our brand.", g:"Your colors and typography applied automatically, every time."},
+  "AccessLint": {ill:"audit", args:[["Body text · 7.1:1","Muted text · 4.6:1","Link on tint · 2.9:1","Button label · 5.2:1"]], t:"Check contrast across the design tokens.", g:"Exact contrast ratios and a WCAG pass or fail for each color pair."},
+  "canvas-design": {ill:"poster", args:["RELEASE NIGHT"], t:"Design a poster for our release party.", g:"A finished PNG or PDF poster with a consistent visual style."},
+  "godot-gdscript-patterns": {ill:"game", args:["Godot 4 · GDScript"], t:"Add a state machine for the player controller.", g:"Idiomatic Godot 4 code: signals, clean scenes and typed GDScript."},
+  "game-engine (web)": {ill:"game", args:["HTML5 Canvas"], t:"Build a canvas platformer with a fixed timestep.", g:"A playable browser game with a proper game loop."},
+  "unity-ecs-patterns": {ill:"game", args:["Unity · DOTS"], t:"Convert the enemy AI to ECS for 10,000 units.", g:"DOTS systems using Jobs and Burst that scale to that many units."},
+  "multiplayer-game": {ill:"net", t:"Add authoritative multiplayer to my arena game.", g:"A design with a tick loop, state sync and server-side validation."},
+  "game-feel": {ill:"juice", t:"Make hits feel punchier.", g:"Screen shake, hit-stop, and squash and stretch, triggered by game events."},
+  "godot-best-practices": {ill:"game", args:["Godot 4 · save system"], t:"Restructure the project and add save and load.", g:"A clean scene tree and a robust save system."},
+  "game-developer": {ill:"game", args:["Unity / Unreal"], t:"Profile and fix the physics stutter.", g:"Fixes that account for whether you're in Unity or Unreal."},
+  "unreal-engine-cpp-pro": {ill:"game", args:["Unreal 5 · C++"], t:"Write a UE5 inventory component in C++.", g:"C++ with correct UPROPERTY and garbage-collection handling that won't crash the editor."},
+  "godot-ui": {ill:"hud", t:"Build a HUD with health, ammo and a pause menu.", g:"A responsive, themed UI built from Control nodes."},
+  "game-design-theory": {ill:"curve", t:"Balance the XP curve for 30 levels.", g:"A progression curve with reasoning based on design theory."},
+  "game-assets": {ill:"sprites", t:"Make a 16×16 knight with a walk cycle.", g:"Pixel-art sprite sheets you can drop straight into the game."},
+  "Trail of Bits Security": {ill:"shield", t:"Audit the auth module for vulnerabilities.", g:"CodeQL and Semgrep findings, a search for similar bugs, and an audit report."},
+  "/security-review": {ill:"shield", args:["scans your pending changes"], t:"/security-review", g:"Security issues in your pending changes, found before you ship."},
+  "Document skills (docx · pdf · pptx · xlsx)": {ill:"docs", t:"Turn this release log into an Excel tracker and a PDF summary.", g:"A real .xlsx with formulas and a formatted PDF."},
+  "doc-coauthoring": {ill:"docs", args:[["OUTLINE","DRAFT","REVIEW","FINAL"],"drafted section by section, with you"], t:"Help me write an RFC for the new sync engine.", g:"A structured spec drafted with you, one section at a time."},
+  "Remotion Best Practices": {ill:"video", t:"Make a 30-second product trailer with captions.", g:"A React video project that renders to MP4."},
+  "algorithmic-art": {ill:"poster", t:"Generate a flow-field background for the hero section.", g:"Seeded p5.js art you can reproduce and tweak."},
+  "slack-gif-creator": {ill:"gif", t:"Make a celebration GIF for the 1.4.1 release.", g:"An animated GIF sized for Slack."},
+};
+const illFor = s => { const u = USE[s.n]; return u ? `<div class="ill">${svg(ILL[u.ill](...(u.args || [])))}</div>` : ""; };
+const tryFor = s => { const u = USE[s.n]; return u ? `<div class="tryget"><div><span>You say</span><q>${esc(u.t)}</q></div><div><span>You get</span>${esc(u.g)}</div></div>` : ""; };
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// ---------- render ----------
+const $ = s => document.querySelector(s);
+let cat = "all", tier = "all", q = "";
+const catsEl = $("#cats"), tiersEl = $("#tiers"), cardsEl = $("#cards");
+
+function chip(label, val, group, count){
+  const b = document.createElement("button");
+  b.className = "chip"; b.dataset.v = val;
+  b.innerHTML = label + (count != null ? `<span class="ct">${count}</span>` : "");
+  b.onclick = () => {
+    if(group === "cat") cat = val; else tier = val;
+    [...(group === "cat" ? catsEl : tiersEl).querySelectorAll(".chip")].forEach(c => c.classList.toggle("on", c.dataset.v === val));
+    render();
+  };
+  return b;
+}
+catsEl.append(chip("✨ All", "all", "cat", SKILLS.length));
+Object.entries(CATS).forEach(([k,v]) => catsEl.append(chip(`${v.icon} ${v.label}`, k, "cat", SKILLS.filter(s => s.cat === k).length)));
+[["All","all"],["S","S"],["A","A"],["B","B"]].forEach(([l,v]) => tiersEl.append(chip(l, v, "tier")));
+catsEl.firstChild.classList.add("on"); tiersEl.querySelector('[data-v="all"]').classList.add("on");
+
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const order = {S:0,A:1,B:2};
+
+function render(){
+  const terms = q.toLowerCase().trim();
+  const list = SKILLS
+    .filter(s => cat === "all" || s.cat === cat)
+    .filter(s => tier === "all" || s.tier === tier)
+    .filter(s => !terms || [s.n,s.by,s.d,s.why,s.tags.join(" "),CATS[s.cat].label].join(" ").toLowerCase().includes(terms))
+    .sort((a,b) => order[a.tier] - order[b.tier]);
+  cardsEl.innerHTML = list.map((s,i) => `
+    <article class="card" style="animation-delay:${Math.min(i*40,500)}ms">
+      ${illFor(s)}
+      <div class="top"><div><h3>${esc(s.n)}</h3><div class="by">${esc(s.by)}</div></div><span class="tier ${s.tier}">${s.tier}</span></div>
+      <div class="tags"><span class="tag">${CATS[s.cat].icon} ${CATS[s.cat].label}</span>${s.tags.map(t => `<span class="tag">${esc(t)}</span>`).join("")}</div>
+      <p>${esc(s.d)}</p>
+      ${tryFor(s)}
+      <div class="why">${esc(s.why)}</div>
+      <div class="cmd"><code>${esc(s.cmd)}</code><button class="copy" data-cmd="${esc(s.cmd)}">Copy</button></div>
+    </article>`).join("");
+  $("#empty").style.display = list.length ? "none" : "block";
+  if(reduced) cardsEl.querySelectorAll("svg").forEach(v => { v.setCurrentTime(4.2); v.pauseAnimations(); });
+}
+render();
+
+// copy
+const toast = $("#toast"); let tt;
+cardsEl.addEventListener("click", async e => {
+  const b = e.target.closest(".copy"); if(!b) return;
+  try { await navigator.clipboard.writeText(b.dataset.cmd); }
+  catch { const t = document.createElement("textarea"); t.value = b.dataset.cmd; document.body.append(t); t.select(); document.execCommand("copy"); t.remove(); }
+  b.textContent = "✓"; b.classList.add("ok");
+  setTimeout(() => { b.textContent = "Copy"; b.classList.remove("ok"); }, 1400);
+  toast.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => toast.classList.remove("show"), 1600);
+});
+// card glow follows cursor
+cardsEl.addEventListener("pointermove", e => {
+  const c = e.target.closest(".card"); if(!c) return;
+  const r = c.getBoundingClientRect();
+  c.style.setProperty("--mx", (e.clientX - r.left) + "px"); c.style.setProperty("--my", (e.clientY - r.top) + "px");
+});
+
+// search
+$("#q").addEventListener("input", e => { q = e.target.value; render(); });
+document.addEventListener("keydown", e => {
+  if(e.key === "/" && document.activeElement !== $("#q")){ e.preventDefault(); $("#q").focus(); }
+});
+
+// stats
+$("#statSkills").dataset.count = SKILLS.length;
+$("#statCats").dataset.count = Object.keys(CATS).length;
+$("#statS").dataset.count = SKILLS.filter(s => s.tier === "S").length;
+document.querySelectorAll("[data-count]").forEach(el => {
+  const end = +el.dataset.count, t0 = performance.now(), dur = 1400;
+  const tick = now => { const p = Math.min((now - t0) / dur, 1); el.textContent = Math.round(end * (1 - Math.pow(1 - p, 3))); if(p < 1) requestAnimationFrame(tick); };
+  requestAnimationFrame(tick);
+});
+
+// typed
+const words = ["software engineering","web development","UI & product design","game development","security","everything else"];
+const typed = $("#typed"); let wi = 0, ci = words[0].length, del = true;
+(function loop(){
+  const w = words[wi];
+  if(del){ ci--; if(ci === 0){ del = false; wi = (wi + 1) % words.length; } }
+  else { ci++; if(ci === words[wi].length){ del = true; typed.textContent = words[wi]; return setTimeout(loop, 1800); } }
+  typed.textContent = words[wi].slice(0, ci) || "​";
+  setTimeout(loop, del ? 35 : 70);
+})();
+
+// reveal on scroll
+const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } }), {threshold:.15});
+document.querySelectorAll(".reveal").forEach((el,i) => { el.style.transitionDelay = (i % 3) * 90 + "ms"; io.observe(el); });
+
+// progress bar
+addEventListener("scroll", () => {
+  const h = document.documentElement; $("#prog").style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + "%";
+}, {passive:true});
+
+// theme
+const root = document.documentElement;
+try { const t = localStorage.getItem("theme"); if(t) root.dataset.theme = t; } catch {}
+$("#theme").onclick = () => {
+  const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  root.dataset.theme = dark ? "light" : "dark";
+  try { localStorage.setItem("theme", root.dataset.theme); } catch {}
+};
+
+// ---------- craft: AI tells gallery ----------
+const mini = s => `<svg viewBox="0 0 140 90" aria-hidden="true">${s}</svg>`;
+const lg = (a,b) => { const id = "tg" + (++gid); return [id, `<defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs>`]; };
+const BG = R(0,0,140,90,"fb",0);
+const icon = (x,y,k) => {
+  const p = {doc:`M${x-6},${y-8} h9 l4,4 v12 h-13 Z M${x-3},${y} h6 M${x-3},${y+4} h6`, bolt:`M${x+1},${y-9} L${x-5},${y+1} h5 l-1,8 6,-10 h-5 Z`, pin:`M${x},${y+9} C${x-7},${y+1} ${x-7},${y-9} ${x},${y-9} C${x+7},${y-9} ${x+7},${y+1} ${x},${y+9} Z M${x},${y-2} m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0`}[k];
+  return `<path d="${p}" class="s1 nf" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>`;
+};
+const TELLS = [
+  {t:"Purple-to-blue gradient hero",
+   ai(){ const [id,d] = lg("#7c3aed","#2563eb"); return d + `<rect width="140" height="90" fill="url(#${id})"/><rect x="30" y="24" width="80" height="8" rx="4" fill="#fff"/><rect x="42" y="38" width="56" height="5" rx="2.5" fill="#fff" opacity=".7"/><rect x="52" y="52" width="36" height="12" rx="6" fill="#fff"/>`; },
+   hu(){ return BG + R(12,16,66,9,"fi",1) + R(12,29,50,9,"fi",1) + R(12,44,38,3,"f1",1.5) + R(12,54,58,3,"fl",1.5) + R(12,60,48,3,"fl",1.5) + R(12,70,34,10,"fi",2) + R(88,12,40,66,"f3",0); },
+   fix:"Use <b>one solid brand color</b> taken from your logo or product. Let typography and real imagery create the contrast."},
+  {t:"Inter for every word",
+   ai(){ return BG + `<text x="12" y="30" font-size="16" class="ti" style="font-family:Inter,sans-serif;font-weight:700">Heading</text><text x="12" y="52" font-size="11" class="ti" style="font-family:Inter,sans-serif">Body text in Inter</text><text x="12" y="72" font-size="8" class="tm" style="font-family:Inter,sans-serif">LABEL · ALSO INTER</text>`; },
+   hu(){ return BG + `<text x="12" y="32" font-size="19" class="ti" style="font-family:Fraunces,serif;font-weight:700">Heading</text><text x="12" y="53" font-size="11" class="ti" style="font-family:Inter,sans-serif">Body in a text face</text><text x="12" y="72" font-size="8" class="f1" style="font-family:'JetBrains Mono',monospace">LABEL · MONO</text>`; },
+   fix:"Pair a <b>display face with a body face</b>, plus a mono for labels. Define a type scale and use only those sizes."},
+  {t:"Centered hero over three identical cards",
+   ai(){ return BG + R(35,10,70,7,"fi",2) + R(45,21,50,4,"fl",2) + R(58,30,24,8,"f2",4) + [0,1,2].map(i => R(10+i*42,46,36,34,"fc",6) + `<circle cx="${28+i*42}" cy="57" r="5" class="f2"/>` + R(16+i*42,68,24,3,"fl",1.5)).join(""); },
+   hu(){ return BG + R(10,12,62,10,"fi",1) + R(10,25,44,10,"fi",1) + R(10,42,54,3,"fl",1.5) + R(10,48,46,3,"fl",1.5) + R(10,58,30,9,"f1",2) + R(80,8,52,46,"f3",0) + R(80,60,52,22,"fc",3) + R(10,74,62,8,"fc",3); },
+   fix:"Use an <b>asymmetric grid</b>, left-aligned text, and cards of different sizes, so the most important item is visually bigger."},
+  {t:"Emoji and stock icons as features",
+   ai(){ return BG + [0,1,2].map(i => R(10+i*42,22,36,46,"fc",8) + `<text x="${28+i*42}" y="50" font-size="16" text-anchor="middle">${["🚀","⚡","✨"][i]}</text>`).join(""); },
+   hu(){ return BG + [["doc",28],["bolt",70],["pin",112]].map(([k,x]) => R(x-18,22,36,46,"fb",4,' style="stroke:var(--line)"') + icon(x,42,k) + R(x-10,56,20,3,"fl",1.5)).join(""); },
+   fix:"Use <b>one consistent icon set</b> (for example Lucide at the same stroke width), or draw custom icons. Never use emoji as feature icons."},
+  {t:"Glass cards and blurry blobs",
+   ai(){ return BG + `<circle cx="30" cy="24" r="30" fill="#a855f7" opacity=".35"/><circle cx="112" cy="70" r="34" fill="#ec4899" opacity=".3"/><circle cx="96" cy="16" r="18" fill="#06b6d4" opacity=".3"/><rect x="26" y="22" width="88" height="48" rx="12" fill="#fff" opacity=".45" stroke="#fff"/>` + R(36,34,50,6,"fi",3,' opacity=".6"') + R(36,46,36,4,"fm",2,' opacity=".5"'); },
+   hu(){ return BG + R(14,14,112,62,"fb",4,' style="stroke:var(--line)"') + R(14,14,48,62,"f3",0,' opacity=".85"') + R(70,24,46,6,"fi",1) + R(70,36,40,3,"fl",1.5) + R(70,42,34,3,"fl",1.5) + `<line x1="70" y1="54" x2="118" y2="54" class="sl"/>` + R(70,60,28,8,"fi",2); },
+   fix:"Use <b>crisp surfaces, real borders and one elevation level</b>. Let real images add texture instead of decorative blobs."},
+  {t:"Same radius and shadow on everything",
+   ai(){ return BG + [[10,12,56,30],[74,12,56,30],[10,50,56,30],[74,50,56,30]].map(([x,y,w,h]) => R(x+2,y+3,w,h,"fi",14,' opacity=".1"') + R(x,y,w,h,"fc",14)).join(""); },
+   hu(){ return BG + R(10,14,48,16,"fi",3) + R(68,10,62,40,"fb",7,' style="stroke:var(--line)"') + R(74,16,50,18,"f3",0) + R(10,40,48,40,"f2",0,' opacity=".75"') + `<circle cx="96" cy="66" r="12" class="f1"/>`; },
+   fix:"Define a <b>radius scale for each element type</b> (buttons, cards, images, avatars) and a single shadow level. Use different shapes on purpose."},
+  {t:"Generic marketing copy",
+   ai(){ return BG + T(70,36,"Unlock the power of","ti",10,"middle","700") + T(70,50,"seamless innovation ✨","ti",10,"middle","700") + T(70,66,"Elevate your workflow today","tm",7.5); },
+   hu(){ return BG + T(12,36,"Send a 5 MB file","ti",11,"start","700") + T(12,51,"in 3 seconds.","f1",11,"start","700") + T(12,68,"No app on the phone. No account.","tm",7.5,"start"); },
+   fix:"Say <b>what it does, for whom, and how fast</b>, in plain words. Have a human edit every headline and button label."},
+  {t:"“Tasteful” second-order defaults",
+   ai(){ return `<rect width="70" height="90" fill="#f4efe6"/><text x="12" y="38" font-size="18" fill="#2b2420" style="font-family:Fraunces,serif;font-weight:700">Aa</text><rect x="12" y="54" width="40" height="12" rx="6" fill="#c8643b"/><rect x="70" width="70" height="90" fill="#0d0d0d"/><rect x="82" y="30" width="46" height="6" rx="1" fill="#f1f1f1"/><rect x="82" y="54" width="40" height="12" rx="2" fill="#c6ff3a"/>`; },
+   hu(){ const [id,d] = lg("#9fc3d6","#e8d3b0"); return d + `<rect x="10" y="10" width="120" height="48" rx="3" fill="url(#${id})"/><path d="M10,58 L40,34 L62,50 L84,28 L130,58 Z" fill="#46606e"/>` + ["#9fc3d6","#e8d3b0","#46606e","#1d2a31"].map((c,i) => `<rect x="${10+i*30}" y="66" width="26" height="14" rx="3" fill="${c}"/>`).join(""); },
+   fix:"Cream with terracotta, and black with acid green, have become defaults too. <b>Yes, this guide uses the first one.</b> Take your palette from your brand and imagery instead."},
+  {t:"Only the default state exists",
+   ai(){ return BG + R(40,36,60,18,"f2",9) + T(70,48,"Button","tw",8,"middle","700"); },
+   hu(){ return BG + R(8,18,38,14,"fi",3) + T(27,27.5,"default","tb",6.5,"middle","600") + R(51,18,38,14,"fi",3,' opacity=".8"') + T(70,27.5,"hover","tb",6.5,"middle","600") + R(94,18,38,14,"fi",3) + `<rect x="91.5" y="15.5" width="43" height="19" rx="5" class="s1 nf" stroke-width="1.5"/>` + T(113,27.5,"focus","tb",6.5,"middle","600")
+     + R(28,52,38,14,"fl",3) + T(47,61.5,"disabled","tm",6.5,"middle","600") + R(74,52,38,14,"fi",3) + `<circle cx="93" cy="59" r="4" class="nf" style="stroke:var(--bg)" stroke-width="1.5" stroke-dasharray="14 6"><animateTransform attributeName="transform" type="rotate" values="0 93 59;360 93 59" dur="1s" ${rep}/></circle>`; },
+   fix:"Design <b>hover, focus-visible, active, disabled and loading</b> states for every control, plus empty, error and 404 screens."},
+  {t:"Invented social proof",
+   ai(){ return BG + T(70,24,"★★★★★","f1",12) + T(70,40,"Loved by 10,000+ teams","ti",9,"middle","700") + [0,1,2,3].map(i => R(10+i*31,54,28,12,"fl",6) + T(24+i*31,62.5,"LOGO","tm",6,"middle","700")).join(""); },
+   hu(){ return BG + R(10,10,120,44,"fb",4,' style="stroke:var(--line)"') + R(10,10,120,8,"fc",4) + R(16,24,40,24,"f3",2,' opacity=".7"') + R(62,24,60,4,"fl",2) + R(62,32,48,4,"fl",2) + T(10,68,"“Cut our handover time in half.”","ti",7.5,"start","600") + T(10,80,"— Sara K., site engineer","tm",7,"start"); },
+   fix:"Show <b>real screenshots and real, attributable quotes</b>, or leave the section out. Invented stats and logos undermine trust."},
+];
+document.getElementById("tells").innerHTML = TELLS.map((t,i) => `
+  <article class="tell reveal">
+    <h4><span>${String(i+1).padStart(2,"0")}</span>${t.t}</h4>
+    <div class="pair"><figure class="bad">${mini(t.ai())}<figcaption>✕ AI default</figcaption></figure><span class="arrow">→</span><figure class="good">${mini(t.hu())}<figcaption>✓ Crafted</figcaption></figure></div>
+    <p>${t.fix}</p>
+  </article>`).join("");
+document.querySelectorAll("#tells .reveal").forEach(el => io.observe(el));
+
+// ---------- craft: checklist ----------
+const CHECKS = [
+  "DESIGN.md exists, with color roles, a type scale, spacing and radius",
+  "A deliberate font pairing (display + body), not Inter for everything",
+  "Palette taken from the brand or product, with no purple gradients",
+  "A clear grid with some asymmetry, not everything centered",
+  "Real copy, real screenshots and photos, no lorem ipsum",
+  "One consistent icon set, no emoji used as feature icons",
+  "Hover, focus-visible, active, disabled and loading states on every control",
+  "Empty, error and 404 states designed",
+  "Checked at 375, 768, 1024 and 1440 px, and at odd widths in between",
+  "Dark mode designed on purpose, or left out on purpose",
+  "Motion has a purpose, stays under 300 ms and respects reduced motion",
+  "Contrast of at least 4.5:1, a full keyboard path, and alt text",
+  "LCP under 2.5 s, optimized images and subset fonts",
+  "Favicon, OG image, page titles and meta descriptions",
+  "Microcopy edited by a human: specific, not hype",
+  "The avoid-ai-design scan passes and the design-reviewer reports no blockers",
+];
+let checked = [];
+try { checked = JSON.parse(localStorage.getItem("craft-checks") || "[]"); } catch {}
+const ckList = document.getElementById("ckList");
+ckList.innerHTML = CHECKS.map((c,i) => `<label class="ck"><input type="checkbox" data-i="${i}" ${checked.includes(i) ? "checked" : ""}><span>${esc(c)}</span></label>`).join("");
+const ckUpdate = () => {
+  const n = ckList.querySelectorAll("input:checked").length;
+  document.getElementById("ckCount").textContent = `${n}/${CHECKS.length}`;
+  document.getElementById("ckBar").style.width = (n / CHECKS.length * 100) + "%";
+};
+ckList.addEventListener("change", () => {
+  checked = [...ckList.querySelectorAll("input:checked")].map(x => +x.dataset.i);
+  try { localStorage.setItem("craft-checks", JSON.stringify(checked)); } catch {}
+  ckUpdate();
+});
+ckUpdate();
+
+// ---------- craft: copy-paste kit ----------
+const KIT = [
+  {label:"design-reviewer agent", path:".claude/agents/design-reviewer.md", note:"A project subagent. Needs the Playwright MCP (claude mcp add playwright npx @playwright/mcp@latest). Run it with: “use the design-reviewer agent on /pricing”.", code:
+`---
+name: design-reviewer
+description: Senior product-designer review of the rendered UI. Use proactively after any frontend change and before committing UI work.
+---
+You are a senior product designer with a strong eye for craft.
+Review the RENDERED page, not just the code.
+
+## Process
+1. Find or start the dev server. Use Playwright to open every changed page
+   at 375, 768 and 1440 px wide and take a full-page screenshot of each.
+2. Compare against DESIGN.md: color roles, type scale, spacing scale,
+   radius and shadow rules, and voice.
+3. Look for AI tells:
+   - purple/indigo gradients, mesh blobs, glassmorphism
+   - Inter (or one font) for every word
+   - centered hero over three identical cards
+   - emoji or random stock icons used as feature icons
+   - the same radius and soft shadow on everything
+   - generic copy ("unlock", "seamless", "elevate", "supercharge")
+   - invented stats, logos or testimonials
+4. Check states: hover, focus-visible, active, disabled, loading, empty, error.
+5. Check accessibility: contrast >= 4.5:1, full keyboard path, alt text,
+   prefers-reduced-motion respected.
+
+## Output
+Group findings as **Blockers**, **High** and **Polish**. For each, give:
+- the screenshot and viewport
+- what is wrong and why a real designer would notice it
+- the exact fix (token, value or component), never a vague suggestion
+
+Do not edit files. Report only.`},
+  {label:"Hook: scan every edit", path:".claude/settings.json", note:"Requires avoid-ai-design installed in the project (.claude/skills/). Adjust the path if you installed it in ~/.claude/skills. When an edit introduces P0 or P1 tells, Claude sees the problems and fixes them in the same turn.", code:
+`{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/skills/avoid-ai-design/scripts/detect.mjs --hook"
+          }
+        ]
+      }
+    ]
+  }
+}`},
+  {label:"DESIGN.md starter", path:"DESIGN.md", note:"Replace the example values with your own brand. The references, the bans and the voice section matter most.", code:
+`# DESIGN.md: <Product name>
+
+## Atmosphere
+Calm, precise and engineered, like a well-made tool.
+Avoid anything flashy or "startup gradient".
+References: linear.app (density), stripe.com/docs (type),
+teenage.engineering (character)
+
+## Color roles
+- bg #F7F7F5 · surface #FFFFFF · ink #111111 · muted #6B6B6B
+- brand #0F5FFF (from the logo; primary actions only)
+- success #18794E · warning #B25E09 · danger #C2261B
+- Never: purple-to-blue gradients, neon accents, more than one accent per screen
+
+## Typography
+- Display: Instrument Serif, 48/52 and 32/38
+- Body: Geist, 16/26 · Label: Geist Mono, 12/16, uppercase
+- Scale: 12 · 14 · 16 · 20 · 24 · 32 · 48. No other sizes.
+
+## Space, radius, elevation
+- Spacing: 4-pt grid (4 8 12 16 24 32 48 72)
+- Radius: buttons 6 · inputs 6 · cards 10 · images 0 · pills 999
+- One shadow level: 0 1px 2px rgb(0 0 0 / .06). Separate with borders, not shadows.
+
+## Layout
+- 12-column grid, max width 1200. Left-align headlines.
+- Asymmetric hero: text 5 columns, media 7 columns.
+
+## Components
+- Primary button: brand background, white text, no gradient, 40 px tall
+- Use cards only for clickable content
+
+## Motion
+- 150 to 250 ms, ease-out, only for state changes. Respect reduced motion.
+
+## Imagery and icons
+- Real product screenshots and site photos. No 3D blobs.
+- Icons: Lucide, 1.5 px stroke. Never emoji.
+
+## Voice
+- Specific and plain: "Send a 5 MB file in 3 seconds",
+  not "Unlock seamless sharing".`},
+  {label:"CLAUDE.md rules", path:"CLAUDE.md", note:"Add this to your project's CLAUDE.md so the rules apply in every session.", code:
+`## Frontend rules
+- Before writing any UI, read DESIGN.md and follow it exactly.
+  Ask before adding a new color, size or radius.
+- Use components from our library (shadcn, restyled to DESIGN.md).
+  Never ship untouched library defaults.
+- Never use: purple/indigo gradients, emoji as icons, glassmorphism,
+  lorem ipsum, or invented logos, testimonials or stats.
+- Every interactive element needs hover, focus-visible, active,
+  disabled and loading states.
+- After any UI change, run the design-reviewer agent and fix every
+  Blocker and High issue before saying the work is done.
+- Run /impeccable audit before opening a PR.`},
+];
+let kitIdx = 0;
+const kitTabs = document.getElementById("kitTabs");
+const kitShow = i => {
+  kitIdx = i;
+  [...kitTabs.children].forEach((b,j) => b.classList.toggle("on", j === i));
+  document.getElementById("kitPath").textContent = KIT[i].path;
+  document.getElementById("kitCode").textContent = KIT[i].code;
+  document.getElementById("kitNote").textContent = KIT[i].note;
+};
+kitTabs.innerHTML = KIT.map((k,i) => `<button data-i="${i}">${k.label}</button>`).join("");
+kitTabs.addEventListener("click", e => { const b = e.target.closest("button"); if(b) kitShow(+b.dataset.i); });
+kitShow(0);
+document.getElementById("kitCopy").addEventListener("click", async e => {
+  const b = e.currentTarget, txt = KIT[kitIdx].code;
+  try { await navigator.clipboard.writeText(txt); }
+  catch { const t = document.createElement("textarea"); t.value = txt; document.body.append(t); t.select(); document.execCommand("copy"); t.remove(); }
+  b.textContent = "✓ Copied"; setTimeout(() => b.textContent = "Copy", 1400);
+  toast.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => toast.classList.remove("show"), 1600);
+});
+</script>
+</body>
+</html>
